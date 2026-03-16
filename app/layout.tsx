@@ -4,8 +4,9 @@ import "./globals.css";
 
 import Navbar from "./_components/Navbar";
 import { cn } from "@/lib/utils";
+import Footer from "./_components/Footer";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

@@ -15,7 +15,7 @@ export default function PromoBanner() {
         {/* LEFT SIDE: Image */}
         <div className="relative w-full md:w-1/2 h-[360px] md:h-auto overflow-hidden">
           <Image
-            src="/spacejoy-banner.jpg" // spacejoy-umAXneH4GhA-unsplash.jpg
+            src="/promo-banner.png" // spacejoy-umAXneH4GhA-unsplash.jpg
             alt="Interior Design Promo"
             fill
             quality={100}
@@ -54,7 +54,7 @@ export default function PromoBanner() {
 
             {/* CTA Button */}
             <Link
-              href="/shop"
+              href="/"
               className={`inline-flex items-center gap-1 w-fit pb-1 border-b border-[#141718] ${inter.className} font-medium text-base text-[#141718] group`}
             >
               Shop Now

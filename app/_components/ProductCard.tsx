@@ -3,7 +3,17 @@ import Image from "next/image";
 import { Star, Heart } from "lucide-react";
 import { inter } from "../utils/font";
 
-export default function ProductCard() {
+export default function ProductCard({
+  name,
+  image,
+  price,
+  rating,
+}: {
+  name: string;
+  image: string;
+  price: number;
+  rating: number;
+}) {
   const blurData =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+ZNPQAIXwM496Xn8QAAAABJRU5ErkJggg==";
 
@@ -28,8 +38,8 @@ export default function ProductCard() {
 
         {/* Product Image */}
         <Image
-          src="/product-placeholder.png"
-          alt="Product Name"
+          src={image}
+          alt={name}
           fill
           quality={100}
           placeholder="blur"
@@ -52,7 +62,11 @@ export default function ProductCard() {
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
-              className="w-3.5 h-3.5 fill-[#141718] text-[#141718]"
+              className={`w-3.5 h-3.5 ${
+                i < rating
+                  ? "fill-[#141718] text-[#141718]" // Filled stars
+                  : "fill-transparent text-[#6C7275]" // Unfilled stars
+              }`}
             />
           ))}
         </div>
@@ -61,7 +75,7 @@ export default function ProductCard() {
         <h4
           className={`${inter.className} font-semibold text-base text-[#141718] truncate`}
         >
-          Lovelace Lamp
+          {name}
         </h4>
 
         {/* Price */}
@@ -69,7 +83,7 @@ export default function ProductCard() {
           <span
             className={`${inter.className} font-semibold text-sm text-[#141718]`}
           >
-            $199.00
+            ${price}
           </span>
           <span
             className={`${inter.className} text-sm text-[#6C7275] line-through`}
