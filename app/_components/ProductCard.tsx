@@ -32,7 +32,7 @@ export default function ProductCard({
         </div>
 
         {/* Wishlist Button */}
-        <button className="absolute top-4 right-4 z-20 p-1.5 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500">
+        <button className="absolute top-4 right-4 z-20 p-1.5 bg-white rounded-full shadow-sm lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500">
           <Heart className="w-5 h-5 cursor-pointer" />
         </button>
 
@@ -44,11 +44,11 @@ export default function ProductCard({
           quality={100}
           placeholder="blur"
           blurDataURL={blurData}
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className="object-cover lg:group-hover:scale-105 lg:transition-transform lg:duration-500"
         />
 
         {/* Add to Cart Hover Button */}
-        <div className="absolute inset-x-4 bottom-4 z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+        <div className="absolute inset-x-4 bottom-4 z-20 lg:opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
           <button className="w-full py-2.5 bg-[#141718] text-white rounded-lg font-medium text-sm hover:bg-[#232627] cursor-pointer">
             Add to cart
           </button>
