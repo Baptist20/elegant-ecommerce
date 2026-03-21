@@ -9,27 +9,26 @@ export default function BlogsGroupSection() {
       id: 1,
       title: "7 ways to decor your home like a professional",
       date: "October 16, 2023",
-      image: "/pexels-taryn-elliott-4112601.jpg",
+      image: "/",
     },
     {
       id: 2,
       title: "The best plants for your living room",
       date: "October 20, 2023",
-      image: "/blog-2.jpg",
+      image: "/",
     },
     {
       id: 3,
       title: "Kitchen organization hacks you need to try",
       date: "November 05, 2023",
-      image: "/blog-3.jpg",
+      image: "/",
     },
     {
       id: 4,
       title: "Minimalist bedroom ideas for a better sleep",
       date: "November 12, 2023",
-      image: "/blog-4.jpg",
+      image: "/",
     },
-    // ... add more as needed
   ];
 
   return (
