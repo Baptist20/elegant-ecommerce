@@ -5,8 +5,9 @@ export default withAuth(
   async function middleware(req) {
     const { token } = req.kindeAuth;
 
+    // Admin logic: Redirect non-admins away from /admin routes
     if (req.nextUrl.pathname.startsWith("/admin")) {
-      const roles = token.roles || [];
+      const roles = token?.roles || [];
       const isAdmin = roles.includes("admin");
 
       if (!isAdmin) {
@@ -18,10 +19,17 @@ export default withAuth(
   },
   {
     isReturnToCurrentPage: true,
-    publicPaths: ["/", "/contact", "/blog", "/about", "/shop"],
+    // Kinde will automatically allow access to these without a login
+    publicPaths: ["/", "/contact", "/about", "/shop", "/api/auth"],
   },
 );
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*"],
+  /*
+   * Match all request paths except for the ones starting with:
+   * - _next/static (static files)
+   * - _next/image (image optimization files)
+   * - favicon.ico (favicon file)
+   */
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
