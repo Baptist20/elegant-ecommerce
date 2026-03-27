@@ -2,11 +2,16 @@
 
 import { CircleUser, Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 import { poppins, space_Grotesk } from "../utils/font";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import FlyoutCart from "./FlyoutCart";
+import {
+  LoginLink,
+  LogoutLink,
+  useKindeBrowserClient,
+} from "@kinde-oss/kinde-auth-nextjs";
 
 const navLinks = [
   {
@@ -30,6 +35,8 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const { isAuthenticated, user, isLoading } = useKindeBrowserClient();
 
   const pathname = usePathname();
 
@@ -56,18 +63,35 @@ export default function Navbar() {
             </p>
           </div>
 
-          {/* right - Cart Icon with Badge */}
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="flex items-center group"
-          >
-            <div className="relative p-1">
-              <ShoppingBag className="h-6 w-6 text-black" />
-              <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
-                2
-              </span>
-            </div>
-          </button>
+          {/* right - User/Login & Cart Icon */}
+          <div className="flex items-center gap-3">
+            {isLoading ? (
+              <div className="h-4 w-12 bg-gray-200 animate-pulse rounded"></div>
+            ) : isAuthenticated ? (
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-black hover:opacity-70 transition-opacity"
+              >
+                {user?.given_name}
+              </Link>
+            ) : (
+              <LoginLink className="text-sm font-medium text-black hover:opacity-70 transition-opacity">
+                Login
+              </LoginLink>
+            )}
+
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="flex items-center group"
+            >
+              <div className="relative p-1">
+                <ShoppingBag className="h-6 w-6 text-black" />
+                <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+                  2
+                </span>
+              </div>
+            </button>
+          </div>
         </div>
 
         {/* mobile pop-up block */}
@@ -159,10 +183,32 @@ export default function Navbar() {
                   <Heart className="w-6 h-6 text-[#6C7275] group-hover:text-black" />
                 </Link>
 
-                {/* Sign In Button */}
-                <button className="w-full mt-4 py-4 bg-black text-white rounded-lg font-medium text-lg hover:bg-zinc-800 active:scale-[0.98] transition-all">
-                  Sign In
-                </button>
+                {/* User Dashboard Link if authenticated */}
+                {isAuthenticated && !isLoading && (
+                  <Link
+                    href="/dashboard"
+                    className="flex justify-between items-center py-3 border-b border-[#E8ECEF] group transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <p className="font-medium text-lg text-[#6C7275] group-hover:text-black">
+                      {user?.given_name}
+                    </p>
+                    <CircleUser className="w-6 h-6 text-[#6C7275] group-hover:text-black" />
+                  </Link>
+                )}
+
+                {/* Login/Logout Button */}
+                {isLoading ? (
+                  <div className="w-full mt-4 h-14 bg-gray-200 animate-pulse rounded-lg"></div>
+                ) : isAuthenticated ? (
+                  <LogoutLink className="w-full mt-4 py-4 bg-black text-white rounded-lg font-medium text-lg hover:bg-zinc-800 active:scale-[0.98] transition-all text-center">
+                    Log out
+                  </LogoutLink>
+                ) : (
+                  <LoginLink className="w-full mt-4 py-4 bg-black text-white rounded-lg font-medium text-lg hover:bg-zinc-800 active:scale-[0.98] transition-all text-center">
+                    Log In
+                  </LoginLink>
+                )}
               </div>
             </div>
           </div>
@@ -212,31 +258,42 @@ export default function Navbar() {
                 />
               </button>
 
-              <Link
-                href="/profile"
-                className="p-1 hover:opacity-70 transition-opacity"
-              >
-                <CircleUser
-                  className="w-6 h-6 text-[#141718]"
-                  strokeWidth={1.5}
-                />
-              </Link>
+              {isLoading ? (
+                <div className="h-6 w-20 bg-gray-200 animate-pulse rounded"></div>
+              ) : isAuthenticated ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="text-sm font-medium text-[#141718] hover:opacity-70 transition-opacity"
+                  >
+                    {user?.given_name}
+                  </Link>
 
-              <button
-                onClick={() => setIsCartOpen(true)}
-                className="flex items-center gap-1 p-1 group cursor-pointer"
-              >
-                <div className="relative">
-                  <ShoppingBag
-                    className="w-6 h-6 text-[#141718]"
-                    strokeWidth={1.5}
-                  />
-                  {/* Cart Badge - Matching the #141718 background from Figma */}
-                  <span className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#141718] text-[12px] font-bold text-white">
-                    2
-                  </span>
-                </div>
-              </button>
+                  <button
+                    onClick={() => setIsCartOpen(true)}
+                    className="flex items-center gap-1 p-1 group cursor-pointer"
+                  >
+                    <div className="relative">
+                      <ShoppingBag
+                        className="w-6 h-6 text-[#141718]"
+                        strokeWidth={1.5}
+                      />
+                      {/* Cart Badge - Matching the #141718 background from Figma */}
+                      <span className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#141718] text-[12px] font-bold text-white">
+                        2
+                      </span>
+                    </div>
+                  </button>
+
+                  <LogoutLink className="text-sm font-medium text-[#6C7275] hover:text-black transition-colors">
+                    Logout
+                  </LogoutLink>
+                </>
+              ) : (
+                <LoginLink className="text-sm font-medium text-[#6C7275] hover:text-black transition-colors">
+                  Login
+                </LoginLink>
+              )}
             </div>
           </div>
         </div>
