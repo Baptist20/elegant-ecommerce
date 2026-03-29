@@ -11,7 +11,7 @@ import clsx from "clsx";
 import Image from "next/image";
 
 const menuItems = [
-  { name: "Account", href: "/user-dashboard/account" },
+  { name: "Account", href: "/user-dashboard" },
   { name: "Address", href: "/user-dashboard/address" },
   { name: "Orders", href: "/user-dashboard/orders" },
   { name: "Wishlist", href: "/user-dashboard/wishlist" },

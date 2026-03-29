@@ -22,8 +22,10 @@ const OrderSchema = new Schema(
       default: "pending",
     },
     shippingAddress: {
-      street: String,
+      country: String,
+      state: String,
       city: String,
+      street: String,
       zipCode: String,
     },
     paymentId: String, // From Stripe or PayPal
