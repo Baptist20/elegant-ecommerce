@@ -1,16 +1,25 @@
 import { withAuth } from "@kinde-oss/kinde-auth-nextjs/middleware";
-import { NextResponse } from "next/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export default withAuth(
-  async function proxy(req) {
-    const { token } = req.kindeAuth;
+  async function proxy(req: NextRequest) {
+    const { getPermission } = getKindeServerSession();
+    const permission = await getPermission("is-admin");
 
-    // Admin logic: Redirect non-admins away from /admin routes
+    // 1. Logic for the /dashboard middle-ground
+    if (req.nextUrl.pathname === "/dashboard") {
+      // Redirect at the server level - no flashes!
+      if (permission?.isGranted) {
+        return NextResponse.redirect(new URL("/admin", req.url));
+      } else {
+        return NextResponse.redirect(new URL("/user-dashboard", req.url));
+      }
+    }
+
+    // 2. Protect /admin routes from non-admins
     if (req.nextUrl.pathname.startsWith("/admin")) {
-      const roles = token?.roles || [];
-      const isAdmin = roles.includes("admin");
-
-      if (!isAdmin) {
+      if (!permission?.isGranted) {
         return NextResponse.redirect(new URL("/", req.url));
       }
     }
@@ -19,7 +28,6 @@ export default withAuth(
   },
   {
     isReturnToCurrentPage: true,
-    // Kinde will automatically allow access to these without a login
     publicPaths: ["/", "/contact", "/about", "/shop", "/api/auth"],
   },
 );

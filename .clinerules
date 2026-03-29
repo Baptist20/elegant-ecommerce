@@ -1,0 +1,40 @@
+# Elegant Stores - Project Rules & Standards
+
+## Tech Stack Context
+
+- **Framework:** Next.js (App Router), TypeScript.
+- **Styling:** Tailwind CSS, Lucide React icons.
+- **Components:** shadcn/ui (Radix UI primitives).
+- **Backend:** Node.js, Mongoose/MongoDB, Kinde Auth.
+- **Auth/Middleware:** Use `proxy.ts` (not middleware.ts) for edge-level logic.
+
+## UI/UX & Figma Transformation Rules
+
+When converting Figma designs to code, do NOT use hardcoded pixel values. Transform them using these "Real-World" logic rules:
+
+1. **Flexible Spacing:** - Replace `width: 440px` or `height: 600px` with responsive classes like `w-full max-w-md` or `aspect-[3/4]`.
+   - Convert fixed `gap: 24px` to Tailwind `gap-6`.
+
+2. **Typography Scaling:**
+   - Map Figma font sizes to Tailwind's scale: `14px -> text-sm`, `16px -> text-base`, `24px -> text-2xl`, etc.
+   - Use `tracking-tight` for headings to give that "Elegant" premium feel.
+
+3. **Color Tokens:**
+   - Primary Black: `#141718` (Tailwind: `bg-[#141718]`).
+   - Secondary Gray: `#6C7275`.
+   - Use CSS variables in `globals.css` if a color is used more than 3 times.
+
+4. **Component Logic:**
+   - Use `shadcn/ui` components first. If a custom component is needed, wrap it in a `framer-motion` container for smooth "Elegant" transitions.
+
+## Backend & Logic Rules
+
+1. **Security:** Always check `getPermission("is-admin")` before allowing data mutations in Server Actions.
+2. **Naming:** Use camelCase for variables/functions and PascalCase for Components.
+3. **Mongoose:** Always include `timestamps: true` in schemas.
+
+## AI Quota Optimization
+
+- Do not read `node_modules`, `.next`, or `dist` folders.
+- If you hit a 429 error, wait 30 seconds before retrying the task.
+- Use `gemini-1.5-flash` for routine tasks and only ask for `gemini-3-flash` for complex logic debugging.
