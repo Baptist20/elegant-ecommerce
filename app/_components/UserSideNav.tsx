@@ -9,10 +9,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import Image from "next/image";
+import { inter } from "../utils/font";
 
 const menuItems = [
   { name: "Account", href: "/user-dashboard" },
-  { name: "Address", href: "/user-dashboard/address" },
   { name: "Orders", href: "/user-dashboard/orders" },
   { name: "Wishlist", href: "/user-dashboard/wishlist" },
 ];
@@ -52,7 +52,9 @@ export default function UserSideNav() {
         {isLoading ? (
           <div className="w-[131px] h-8 bg-gray-200 animate-pulse rounded flex-none order-1 grow-0" />
         ) : (
-          <p className="w-[131px] h-8 font-['Inter'] font-semibold text-xl leading-8 text-black flex-none order-1 grow-0 text-center truncate">
+          <p
+            className={`w-[131px] h-8 ${inter.className} font-semibold text-xl leading-8 text-black flex-none order-1 grow-0 text-center truncate`}
+          >
             {user?.given_name} {user?.family_name}
           </p>
         )}
@@ -74,7 +76,7 @@ export default function UserSideNav() {
               <Link
                 href={item.href}
                 className={clsx(
-                  "w-[230px] h-[26px] font-['Inter'] font-semibold text-base leading-[26px] flex-none order-0 self-stretch grow-0 transition-colors",
+                  `w-[230px] h-[26px] ${inter.className} font-semibold text-base leading-[26px] flex-none order-0 self-stretch grow-0 transition-colors`,
                   isActive
                     ? "text-[#141718]"
                     : "text-[#6C7275] hover:text-[#141718]",
@@ -88,7 +90,9 @@ export default function UserSideNav() {
 
         {/* Log Out Item */}
         <div className="flex flex-col items-start py-2 px-0 gap-[10px] w-[230px] h-[42px] flex-none order-[4] grow-0">
-          <LogoutLink className="w-[230px] h-[26px] font-['Inter'] font-semibold text-base leading-[26px] text-[#6C7275] hover:text-[#141718] flex-none order-0 self-stretch grow-0 transition-colors">
+          <LogoutLink
+            className={`w-[230px] h-[26px] ${inter.className} font-semibold text-base leading-[26px] text-[#6C7275] hover:text-[#141718] flex-none order-0 self-stretch grow-0 transition-colors`}
+          >
             Log Out
           </LogoutLink>
         </div>

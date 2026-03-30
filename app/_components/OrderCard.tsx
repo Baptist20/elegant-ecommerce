@@ -7,7 +7,13 @@ interface OrderCardProps {
   orderDate: Date;
   status: string;
   totalPrice: number;
-  deliveryLocation: { street: string; city: string; zipCode: string };
+  deliveryLocation: {
+    street: string;
+    city: string;
+    zipCode: string;
+    country: string;
+    state: string;
+  };
 }
 
 export default function OrderCard({
@@ -59,6 +65,7 @@ export default function OrderCard({
         </p>
         <p className="text-sm text-[#141718]">
           {deliveryLocation.street}, {deliveryLocation.city},{" "}
+          {deliveryLocation.state}, {deliveryLocation.country},{" "}
           {deliveryLocation.zipCode}
         </p>
       </div>

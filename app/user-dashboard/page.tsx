@@ -16,7 +16,7 @@ export default function UserDashboardPage() {
     try {
       async function getUserDetails() {
         if (!user?.id) return;
-        const data = await axios(`/api/user/${user?.id}`);
+        const data = await axios(`/api/user/${user.id}`);
         const details = await data.data;
         setUserDetails(details);
       }

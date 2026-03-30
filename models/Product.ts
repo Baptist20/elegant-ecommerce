@@ -13,6 +13,8 @@ const ProductSchema = new Schema(
       required: true,
     },
     stock: { type: Number, default: 0 },
+    images: [{ type: String }],
+    colors: [{ type: String }],
   },
   { timestamps: true },
 );

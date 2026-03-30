@@ -1,9 +1,43 @@
 import React from "react";
-import { X } from "lucide-react";
-import Image from "next/image";
 import WishlistCard from "../../_components/WishlistCard";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import connectDB from "@/lib/db";
+import { User } from "@/models/User";
+import { Product } from "@/models/Product"; // Ensure Product model is registered
+import { ProductType } from "@/app/utils/types";
 
-export default function WishlistPage() {
+export default async function WishlistPage() {
+  const { getUser } = getKindeServerSession();
+  const kindeUser = await getUser();
+
+  if (!kindeUser || !kindeUser.id) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-xl text-[#6C7275]">
+          Please log in to view your wishlist.
+        </p>
+      </div>
+    );
+  }
+
+  await connectDB();
+
+  // Explicitly import Product model to ensure it's registered with Mongoose
+  // This resolves the MissingSchemaError
+  const user = await User.findOne({ kindeUserId: kindeUser.id }).populate(
+    "wishlist",
+  );
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-xl text-[#6C7275]">User not found in database.</p>
+      </div>
+    );
+  }
+
+  const wishlistItems: ProductType[] = user.wishlist;
+
   return (
     <div className="flex flex-col items-start w-full max-w-[851px] p-0 md:px-[72px] gap-10">
       <h2 className="text-2xl font-semibold text-black">Your Wishlist</h2>
@@ -17,35 +51,22 @@ export default function WishlistPage() {
             <p className="flex-none w-[137px]">Action</p>
           </div>
 
-          {/* Wishlist Items */}
-          <WishlistCard
-            imageSrc="/table-lamp.png"
-            altText="Tray Table"
-            productName="Tray Table"
-            productColor="Color: Black"
-            price="$19.19"
-          />
-          <WishlistCard
-            imageSrc="/loveseat-sofa.png"
-            altText="Sofa"
-            productName="Sofa"
-            productColor="Color: Beige"
-            price="$345.00"
-          />
-          <WishlistCard
-            imageSrc="/bamboo-basket.png"
-            altText="Bamboo basket"
-            productName="Bamboo basket"
-            productColor="Color: Beige"
-            price="$8.80"
-          />
-          <WishlistCard
-            imageSrc="/pillow.png"
-            altText="Pillow"
-            productName="Pillow"
-            productColor="Color: Beige"
-            price="$8.80"
-          />
+          {wishlistItems.length === 0 ? (
+            <div className="flex items-center justify-center w-full py-10">
+              <p className="text-xl text-[#6C7275]">Your wishlist is empty.</p>
+            </div>
+          ) : (
+            wishlistItems.map((item) => (
+              <WishlistCard
+                key={item._id.toString()}
+                imageSrc={item.images[0]}
+                altText={item.name}
+                productName={item.name}
+                productColor={`Color: ${item.colors[0]}`}
+                price={`$${item.price.toFixed(2)}`}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>

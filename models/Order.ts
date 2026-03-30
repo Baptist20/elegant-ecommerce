@@ -22,11 +22,11 @@ const OrderSchema = new Schema(
       default: "pending",
     },
     shippingAddress: {
-      country: String,
-      state: String,
-      city: String,
-      street: String,
-      zipCode: String,
+      country: { type: String, required: true },
+      state: { type: String, required: true },
+      city: { type: String, required: true },
+      street: { type: String, required: true },
+      zipCode: { type: String, required: true },
     },
     paymentId: String, // From Stripe or PayPal
   },

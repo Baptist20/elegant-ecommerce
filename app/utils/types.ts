@@ -1,6 +1,17 @@
-export type wishlist = {
-  productId: string;
+export type ProductType = {
+  _id: string;
+  name: string;
+  slug: string;
+  price: number;
+  category: string;
+  stock: number;
+  images: string[];
+  colors: string[];
+  createdAt: Date;
+  updatedAt: Date;
 };
+
+export type wishlist = ProductType;
 
 export type userType = {
   firstName: string;
@@ -22,17 +33,17 @@ enum statuses {
   DELIVERED = "delivered",
   CANCELLED = "cancelled",
 }
-export type orders = [
-  {
-    items: item[];
-    totalAmount: number;
-    status: statuses;
-    shippingAddress: {
-      country: string;
-      state: string;
-      city: string;
-      street: string;
-      zipcode: string;
-    };
-  },
-];
+export type ordersType = {
+  orderId: string;
+  items: item[];
+  totalAmount: number;
+  status: statuses;
+  shippingAddress: {
+    country?: string;
+    state?: string;
+    city?: string;
+    street?: string;
+    zipcode?: string;
+  };
+  orderDate: Date;
+};
