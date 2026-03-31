@@ -1,51 +1,62 @@
 "use client";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import clsx from "clsx";
-import { poppins } from "../utils/font"; // Assuming poppins is the correct font
+import {
+  ShoppingBag,
+  PlusCircle,
+  FileText,
+  Users,
+  LogOut,
+  LayoutDashboard,
+} from "lucide-react";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
-const menuItems = [
-  { name: "Add Product/Blog", href: "/admin" },
-  { name: "All Products", href: "/admin/products" },
-  { name: "All Blogs", href: "/admin/blogs" },
+const navItems = [
+  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Orders", href: "/admin/orders", icon: ShoppingBag },
+  { name: "Add Product", href: "/admin/add-product", icon: PlusCircle },
+  { name: "Add Blog", href: "/admin/add-blog", icon: FileText },
+  { name: "Users List", href: "/admin/users", icon: Users },
 ];
 
 export default function AdminSideNav() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex flex-col items-center py-10 px-4 gap-10 w-full md:w-[262px] h-[498px] bg-[#F3F5F7] rounded-lg flex-none order-0 grow-0">
-      {/* Admin Title */}
-      <h2 className="text-2xl font-semibold text-black">Admin Panel</h2>
+    <aside className="flex flex-col w-64 h-screen bg-white border-r border-gray-200 sticky top-0">
+      <div className="p-6">
+        <h1 className="text-xl font-bold text-black tracking-tight">
+          Elegant Admin
+        </h1>
+      </div>
 
-      {/* Menu List */}
-      <nav className="flex flex-col items-start p-0 gap-3 w-full md:w-[230px] flex-none order-1 grow-0">
-        {menuItems.map((item, index) => {
+      <nav className="flex-1 px-4 space-y-1">
+        {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <div
+            <Link
               key={item.name}
-              className={clsx(
-                "flex flex-col items-start py-2 px-0 gap-[10px] w-full md:w-[230px] h-[42px] border-b box-border flex-none grow-0",
-                isActive ? "border-[#141718]" : "border-transparent",
-                `order-${index}`,
-              )}
+              href={item.href}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isActive
+                  ? "bg-black text-white"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-black"
+              }`}
             >
-              <Link
-                href={item.href}
-                className={clsx(
-                  `w-full md:w-[230px] h-[26px] ${poppins.className} font-semibold text-base leading-[26px] flex-none order-0 self-stretch grow-0 transition-colors`,
-                  isActive
-                    ? "text-[#141718]"
-                    : "text-[#6C7275] hover:text-[#141718]",
-                )}
-              >
-                {item.name}
-              </Link>
-            </div>
+              <item.icon className="w-5 h-5" />
+              {item.name}
+            </Link>
           );
         })}
       </nav>
+
+      <div className="p-4 border-t border-gray-200">
+        <LogoutLink className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
+          <LogOut className="w-5 h-5" />
+          Logout
+        </LogoutLink>
+      </div>
     </aside>
   );
 }

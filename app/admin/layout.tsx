@@ -1,51 +1,46 @@
+import React from "react";
 import AdminSideNav from "../_components/AdminSideNav";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
-import connectDB from "@/lib/db";
 import { User } from "@/models/User";
+import connectDB from "@/lib/db";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // 1. Protection Guard
   const { getUser, getPermission } = getKindeServerSession();
   const kindeUser = await getUser();
+  const isAdminPermission = await getPermission("is-admin");
 
-  if (!kindeUser || !kindeUser.id) {
-    redirect("/api/auth/login");
-  }
-
-  const permission = await getPermission("is-admin");
-
-  if (!permission) {
+  // Redirect if not logged in or doesn't have Kinde admin permission
+  if (!kindeUser) {
     redirect("/");
   }
 
-  await connectDB();
+  if (!isAdminPermission) {
+    redirect("/api/auth/login");
+  }
 
-  const user = await User.findOneAndUpdate(
-    { kindeUserId: kindeUser.id },
-    { $set: { role: "admin" } },
-    { new: true },
-  );
+  // 2. Double-check DB role (for total security)
+  await connectDB();
+  const dbUser = await User.findOne({ kindeUserId: kindeUser.id });
+
+  if (dbUser?.role !== "admin") {
+    redirect("/");
+  }
 
   return (
-    <section className="max-w-[1440px] mx-auto px-10 lg:px-40 py-20">
-      <h1 className="text-[54px] font-medium leading-[58px] text-center mb-10">
-        {`Welcome admin ${user.firstName}`}
-      </h1>
+    <div className="flex min-h-screen bg-[#F3F5F7]">
+      {/* Sidebar - Fixed width */}
+      <AdminSideNav />
 
-      {/* Admin section parent div */}
-      <div className="flex flex-col md:flex-row items-start p-0 gap-[72px] w-full max-w-[1120px] mx-auto">
-        {/* Sidenav */}
-        <AdminSideNav />
-
-        {/* Outlet / Main Content */}
-        <div className="flex flex-col items-start p-0 gap-10 w-full md:max-w-[851px]">
-          {children}
-        </div>
-      </div>
-    </section>
+      {/* Main Content Area */}
+      <main className="flex-1 p-8 overflow-y-auto">
+        <div className="max-w-6xl mx-auto">{children}</div>
+      </main>
+    </div>
   );
 }

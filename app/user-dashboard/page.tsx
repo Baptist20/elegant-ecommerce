@@ -15,7 +15,7 @@ export default function UserDashboardPage() {
   useEffect(() => {
     try {
       async function getUserDetails() {
-        if (!user?.id) return;
+        if (!user) return;
         const data = await axios(`/api/user/${user.id}`);
         const details = await data.data;
         setUserDetails(details);

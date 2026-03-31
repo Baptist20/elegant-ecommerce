@@ -45,7 +45,7 @@ export default function Navbar() {
       <nav>
         {/* MOBILE NAVIGATION */}
         {/* mobile nav header */}
-        <div className="md:hidden sticky top-0 z-40 flex justify-between items-center py-4 px-6 w-full h-15 bg-white border-b border-gray-100">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex justify-between items-center py-4 px-6 w-full h-15 bg-white border-b border-gray-100">
           {/* left - Menu & Logo */}
           <div className="flex items-center gap-2">
             <button
@@ -80,17 +80,21 @@ export default function Navbar() {
               </LoginLink>
             )}
 
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="flex items-center group"
-            >
-              <div className="relative p-1">
-                <ShoppingBag className="h-6 w-6 text-black" />
-                <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
-                  2
-                </span>
-              </div>
-            </button>
+            {isAuthenticated ? (
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="flex items-center group"
+              >
+                <div className="relative p-1">
+                  <ShoppingBag className="h-6 w-6 text-black" />
+                  <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+                    2
+                  </span>
+                </div>
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 
@@ -152,36 +156,42 @@ export default function Navbar() {
               {/* --- DOWN BLOCK --- */}
               <div className="flex flex-col w-full max-w-[295px] mx-auto gap-4 mt-auto pt-8">
                 {/* Cart Item */}
-                <Link
-                  href="/cart"
-                  className="flex justify-between items-center py-3 border-b border-[#E8ECEF] group transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <p className="font-medium text-lg text-[#6C7275] group-hover:text-black">
-                    Cart
-                  </p>
-                  <div className="relative">
-                    <ShoppingBag
-                      className="w-6 h-6 text-[#6C7275] group-hover:text-black"
-                      onClick={() => setIsCartOpen(true)}
-                    />
-                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] text-white">
-                      2
-                    </span>
-                  </div>
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link
+                      href="/cart"
+                      className="flex justify-between items-center py-3 border-b border-[#E8ECEF] group transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <p className="font-medium text-lg text-[#6C7275] group-hover:text-black">
+                        Cart
+                      </p>
+                      <div className="relative">
+                        <ShoppingBag
+                          className="w-6 h-6 text-[#6C7275] group-hover:text-black"
+                          onClick={() => setIsCartOpen(true)}
+                        />
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] text-white">
+                          2
+                        </span>
+                      </div>
+                    </Link>
 
-                {/* Wishlist Item */}
-                <Link
-                  href="/wishlist"
-                  className="flex justify-between items-center py-3 border-b border-[#E8ECEF] group transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <p className="font-medium text-lg text-[#6C7275] group-hover:text-black">
-                    Wishlist
-                  </p>
-                  <Heart className="w-6 h-6 text-[#6C7275] group-hover:text-black" />
-                </Link>
+                    {/* Wishlist Item */}
+                    <Link
+                      href="/user-dashboard/wishlist"
+                      className="flex justify-between items-center py-3 border-b border-[#E8ECEF] group transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <p className="font-medium text-lg text-[#6C7275] group-hover:text-black">
+                        Wishlist
+                      </p>
+                      <Heart className="w-6 h-6 text-[#6C7275] group-hover:text-black" />
+                    </Link>
+                  </>
+                ) : (
+                  ""
+                )}
 
                 {/* User Dashboard Link if authenticated */}
                 {isAuthenticated && !isLoading && (
@@ -216,7 +226,7 @@ export default function Navbar() {
 
         {/* LARGER SCREEN NAVIGATION */}
 
-        <div className="hidden md:block w-full bg-white sticky top-0 z-50">
+        <div className="hidden md:block fixed top-0 left-0 right-0 w-full bg-white z-50 border-b border-gray-100">
           {/* Container: Handles the 1440px max-width and the 160px (px-40) padding */}
           <div className="max-w-[1440px] mx-auto h-[60px] flex items-center justify-between px-10 lg:px-40">
             {/* 1. Logo Section */}
@@ -278,7 +288,6 @@ export default function Navbar() {
                         className="w-6 h-6 text-[#141718]"
                         strokeWidth={1.5}
                       />
-                      {/* Cart Badge - Matching the #141718 background from Figma */}
                       <span className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#141718] text-[12px] font-bold text-white">
                         2
                       </span>
