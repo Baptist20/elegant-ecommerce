@@ -28,7 +28,7 @@ export default withAuth(
   },
   {
     isReturnToCurrentPage: true,
-    publicPaths: ["/", "/contact", "/about", "/shop", "/api/auth"],
+    publicPaths: ["/", "/contact", "/blog", "/about", "/shop", "/api/auth"],
   },
 );
 
