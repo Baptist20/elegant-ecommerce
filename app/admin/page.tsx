@@ -1,53 +1,3 @@
-// import React from "react";
-// import StatCards from "../_components/StatCards";
-// import RecentOrders from "../_components/RecentOrders";
-// import InventoryAlerts from "../_components/InventoryAlerts";
-// import BlogSummary from "../_components/BlogSummary";
-
-// export default async function AdminDashboardPage() {
-//   // --- DATABASE LOGIC STARTS HERE ---
-//   // You will replace these with your actual Mongoose calls like:
-//   // const orders = await Order.find().sort({ createdAt: -1 }).limit(5);
-
-//   const dummyStats = { revenue: 12540, orders: 156, products: 42, users: 890 };
-//   const dummyOrders = []; // Add your order data here
-//   const dummyLowStock = []; // Add products where stock < 10
-//   const dummyLatestBlog = {
-//     title: "Winter Collection 2026",
-//     createdAt: new Date(),
-//   };
-
-//   return (
-//     <div className="flex flex-col gap-8">
-//       <div>
-//         <h1 className="text-3xl font-bold font-poppins text-gray-900 tracking-tight">
-//           Dashboard
-//         </h1>
-//         <p className="text-gray-500 mt-1">
-//           Welcome back to your store's control center.
-//         </p>
-//       </div>
-
-//       {/* Stats Section */}
-//       <StatCards data={dummyStats} />
-
-//       {/* Bottom Grid: 2 Columns on large screens, 1 Column on mobile */}
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-//         {/* Left Column: Recent Orders (Spans 2 columns) */}
-//         <div className="lg:col-span-2">
-//           <RecentOrders orders={dummyOrders} />
-//         </div>
-
-//         {/* Right Column: Inventory & Blog (Spans 1 column) */}
-//         <div className="flex flex-col gap-8">
-//           <InventoryAlerts products={dummyLowStock} />
-//           <BlogSummary latestBlog={dummyLatestBlog} totalCount={12} />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 import StatCards from "../_components/StatCards";
 import RecentOrders from "../_components/RecentOrders";
 import InventoryAlerts from "../_components/InventoryAlerts";
@@ -118,7 +68,7 @@ export default function AdminDashboardPage() {
             Dashboard Overview
           </h1>
           <p className="text-gray-500 mt-1 text-sm md:text-base">
-            Welcome back! Here's what's happening with **3legant** today.
+            Welcome back! Here's what's happening with <b>3legant</b> today.
           </p>
         </div>
         <div className="flex items-center gap-3">
