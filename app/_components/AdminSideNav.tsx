@@ -16,8 +16,8 @@ import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Orders", href: "/admin/orders", icon: ShoppingBag },
-  { name: "Products", href: "/admin/add-product", icon: PlusCircle },
-  { name: "Blogs", href: "/admin/add-blog", icon: FileText },
+  { name: "Products", href: "/admin/products", icon: PlusCircle },
+  { name: "Blogs", href: "/admin/blogs", icon: FileText },
   { name: "Categories", href: "/admin/categories", icon: LayoutGrid },
   { name: "Users List", href: "/admin/users", icon: Users },
 ];

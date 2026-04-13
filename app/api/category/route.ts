@@ -3,7 +3,6 @@ import connectDB from "@/lib/db";
 import { Category } from "@/models/Category";
 // import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { validateAdmin } from "@/lib/admin-guard";
-import { revalidatePath } from "next/cache";
 
 // Helper function to generate slug from name
 function generateSlug(name: string): string {
@@ -131,5 +130,3 @@ export async function DELETE(request: NextRequest) {
     );
   }
 }
-
-revalidatePath("/admin/categories");

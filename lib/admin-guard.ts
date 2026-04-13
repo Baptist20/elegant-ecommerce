@@ -9,7 +9,7 @@ export async function validateAdmin() {
   if (!isUserAuth) {
     return NextResponse.json(
       {
-        message: "Login to perfor this task",
+        message: "Login to perform this task",
       },
       { status: 400 },
     );

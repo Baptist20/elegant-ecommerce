@@ -13,13 +13,13 @@ const ProductSchema = new Schema(
       required: true,
     },
     stock: { type: Number, default: 0 },
-    images: [{ type: String }],
-    colors: [{ type: String }],
+    images: [String],
+    colors: [String],
   },
   { timestamps: true },
 );
 
-ProductSchema.pre("validate", function (next: (err?: Error) => void) {
+ProductSchema.pre("save", function (next: () => void) {
   if (this.name && !this.slug) {
     this.slug = this.name
       .toLowerCase()
