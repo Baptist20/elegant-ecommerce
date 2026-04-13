@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { poppins, inter } from "../utils/font";
@@ -9,34 +12,106 @@ import {
 
 import ProductCard from "./ProductCard";
 
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  images: string[];
+  rating?: number;
+}
+
 export default function NewArrivals() {
-  // Array to map through for the carousel items
-  const products = [
-    {
-      image: "/loveseat-sofa.png",
-      rating: 5,
-      name: "Loveseat Sofa",
-      price: 199,
-    },
-    {
-      image: "/table-lamp.png",
-      rating: 4,
-      name: "Table Lamp",
-      price: 24.99,
-    },
-    {
-      image: "/beige-table-lamp.png",
-      rating: 3,
-      name: "Beige Table Lamp",
-      price: 24.99,
-    },
-    {
-      image: "/bamboo-basket.png",
-      rating: 4,
-      name: "Bamboo basket",
-      price: 24.99,
-    },
-  ];
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/products?limit=4&sort=-createdAt");
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch products: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to load products",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <section className="bg-white pt-12 md:pt-[48px] overflow-hidden pb-10 md:pb-20">
+        <div className="max-w-[1440px] ml-auto">
+          <div className="pl-4 md:pl-10 lg:pl-40 flex flex-col gap-12">
+            <div className="flex items-end justify-between pr-4 md:pr-10 lg:pr-40">
+              <h2
+                className={`${poppins.className} text-[34px] md:text-[40px] leading-[44px] font-medium tracking-[-0.4px] text-[#141718]`}
+              >
+                New <br className="md:hidden" /> Arrivals
+              </h2>
+            </div>
+            <div className="flex justify-center items-center h-64">
+              <p className="text-gray-600">Loading new arrivals...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="bg-white pt-12 md:pt-[48px] overflow-hidden pb-10 md:pb-20">
+        <div className="max-w-[1440px] ml-auto">
+          <div className="pl-4 md:pl-10 lg:pl-40 flex flex-col gap-12">
+            <div className="flex items-end justify-between pr-4 md:pr-10 lg:pr-40">
+              <h2
+                className={`${poppins.className} text-[34px] md:text-[40px] leading-[44px] font-medium tracking-[-0.4px] text-[#141718]`}
+              >
+                New <br className="md:hidden" /> Arrivals
+              </h2>
+            </div>
+            <div className="flex justify-center items-center h-64">
+              <p className="text-red-600">Error: {error}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section className="bg-white pt-12 md:pt-[48px] overflow-hidden pb-10 md:pb-20">
+        <div className="max-w-[1440px] ml-auto">
+          <div className="pl-4 md:pl-10 lg:pl-40 flex flex-col gap-12">
+            <div className="flex items-end justify-between pr-4 md:pr-10 lg:pr-40">
+              <h2
+                className={`${poppins.className} text-[34px] md:text-[40px] leading-[44px] font-medium tracking-[-0.4px] text-[#141718]`}
+              >
+                New <br className="md:hidden" /> Arrivals
+              </h2>
+            </div>
+            <div className="flex justify-center items-center h-64">
+              <p className="text-gray-600">No products available</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="bg-white pt-12 md:pt-[48px] overflow-hidden pb-10 md:pb-20">
@@ -72,15 +147,15 @@ export default function NewArrivals() {
               <CarouselContent className="-ml-6">
                 {products.map((product) => (
                   <CarouselItem
-                    key={product.name}
+                    key={product._id}
                     // basis-auto allows the ProductCard's internal 262px width to dictate the size
                     className="pl-6 basis-auto"
                   >
                     <ProductCard
                       name={product.name}
-                      image={product.image}
+                      image={product.images?.[0] || "/placeholder-product.png"}
                       price={product.price}
-                      rating={product.rating}
+                      rating={product.rating || 4} // Default rating if not provided
                     />
                   </CarouselItem>
                 ))}

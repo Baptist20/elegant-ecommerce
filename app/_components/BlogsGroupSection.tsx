@@ -1,35 +1,100 @@
-import React from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import BlogCard from "./BlogCard";
 import BlogToolbar from "./BlogToolbar";
 
+interface Blog {
+  _id: string;
+  title: string;
+  slug: string;
+  content: string;
+  author: string;
+  category: {
+    _id: string;
+    name: string;
+    slug: string;
+  } | null;
+  thumbnail: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function BlogsGroupSection() {
-  // Mock data for the grid
-  const blogPosts = [
-    {
-      id: 1,
-      title: "7 ways to decor your home like a professional",
-      date: "October 16, 2023",
-      image: "/",
-    },
-    {
-      id: 2,
-      title: "The best plants for your living room",
-      date: "October 20, 2023",
-      image: "/",
-    },
-    {
-      id: 3,
-      title: "Kitchen organization hacks you need to try",
-      date: "November 05, 2023",
-      image: "/",
-    },
-    {
-      id: 4,
-      title: "Minimalist bedroom ideas for a better sleep",
-      date: "November 12, 2023",
-      image: "/",
-    },
-  ];
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/blogs");
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch blogs: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setBlogs(data);
+      } catch (err) {
+        console.error("Error fetching blogs:", err);
+        setError(err instanceof Error ? err.message : "Failed to load blogs");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <section className="w-full bg-white">
+        <div className="max-w-[1440px] mx-auto flex flex-col items-center gap-10 lg:gap-20 px-8 lg:px-[160px] pt-10 pb-20">
+          <BlogToolbar />
+          <div className="flex justify-center items-center h-64 w-full">
+            <p className="text-gray-600">Loading blog posts...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="w-full bg-white">
+        <div className="max-w-[1440px] mx-auto flex flex-col items-center gap-10 lg:gap-20 px-8 lg:px-[160px] pt-10 pb-20">
+          <BlogToolbar />
+          <div className="flex justify-center items-center h-64 w-full">
+            <p className="text-red-600">Error: {error}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (blogs.length === 0) {
+    return (
+      <section className="w-full bg-white">
+        <div className="max-w-[1440px] mx-auto flex flex-col items-center gap-10 lg:gap-20 px-8 lg:px-[160px] pt-10 pb-20">
+          <BlogToolbar />
+          <div className="flex justify-center items-center h-64 w-full">
+            <p className="text-gray-600">No blog posts available</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full bg-white">
@@ -42,12 +107,13 @@ export default function BlogsGroupSection() {
         <div className="w-full flex flex-col items-center gap-10 lg:gap-20">
           {/* Responsive Grid System */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12 w-full max-w-[1121px]">
-            {blogPosts.map((post) => (
+            {blogs.map((blog) => (
               <BlogCard
-                key={post.id}
-                title={post.title}
-                date={post.date}
-                image={post.image}
+                key={blog._id}
+                title={blog.title}
+                date={formatDate(blog.createdAt)}
+                image={blog.thumbnail || "/placeholder-blog.png"}
+                slug={blog.slug}
               />
             ))}
           </div>

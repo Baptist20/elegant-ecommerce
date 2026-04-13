@@ -12,22 +12,12 @@ const ProductSchema = new Schema(
       ref: "Category",
       required: true,
     },
+    description: { type: String },
     stock: { type: Number, default: 0 },
     images: [String],
     colors: [String],
   },
   { timestamps: true },
 );
-
-ProductSchema.pre("save", function (next: () => void) {
-  if (this.name && !this.slug) {
-    this.slug = this.name
-      .toLowerCase()
-      .trim() // Added trim to handle accidental leading/trailing spaces
-      .replace(/[^\w ]+/g, "")
-      .replace(/ +/g, "-");
-  }
-  next();
-});
 
 export const Product = models.Product || model("Product", ProductSchema);

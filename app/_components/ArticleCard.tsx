@@ -7,9 +7,11 @@ import { poppins, inter } from "../utils/font";
 export default function ArticleCard({
   name,
   image,
+  slug,
 }: {
   name: string;
   image: string;
+  slug: string;
 }) {
   const blurData =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+ZNPQAIXwM496Xn8QAAAABJRU5ErkJggg==";
@@ -40,7 +42,7 @@ export default function ArticleCard({
 
         {/* Read More Button */}
         <Link
-          href=""
+          href={`/blog/${slug}`}
           className={`flex items-center gap-1 pb-1 border-b border-[#141718] ${inter.className} font-medium text-base text-[#141718] group/btn`}
         >
           <span>Read More</span>

@@ -1,8 +1,45 @@
-import React from "react";
-import { ChevronDown, Grid3X3, LayoutGrid, Square, List } from "lucide-react";
+"use client";
+
+import { useState, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 import { inter } from "../utils/font";
 
+interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+}
+
 export default function ShopToolbar() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/categories");
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch categories: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setCategories(data);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to load categories",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <div className="flex flex-col lg:flex-row lg:items-end justify-between w-full gap-8 lg:gap-4 py-8 lg:py-0">
       {/* --- LEFT: FILTERS SECTION --- */}
@@ -15,11 +52,30 @@ export default function ShopToolbar() {
             Categories
           </label>
           <div className="relative">
-            <select className="w-full h-12 px-4 bg-transparent border-2 border-[#6C7275] rounded-lg appearance-none font-semibold text-[#141718] focus:outline-none focus:ring-2 focus:ring-black/5 cursor-pointer">
-              <option value="living-room">Living Room</option>
-              <option value="bedroom">Bedroom</option>
-              <option value="kitchen">Kitchen</option>
-              <option value="bathroom">Bathroom</option>
+            <select
+              className="w-full h-12 px-4 bg-transparent border-2 border-[#6C7275] rounded-lg appearance-none font-semibold text-[#141718] focus:outline-none focus:ring-2 focus:ring-black/5 cursor-pointer"
+              disabled={isLoading}
+            >
+              <option value="all">All Categories</option>
+              {isLoading ? (
+                <option value="loading" disabled>
+                  Loading categories...
+                </option>
+              ) : error ? (
+                <option value="error" disabled>
+                  Error loading categories
+                </option>
+              ) : categories.length === 0 ? (
+                <option value="none" disabled>
+                  No categories available
+                </option>
+              ) : (
+                categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))
+              )}
             </select>
             <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#6C7275] pointer-events-none" />
           </div>

@@ -106,7 +106,7 @@ export default function AdminDashboardPage() {
           </h3>
           <div className="space-y-2">
             <Link
-              href="/admin/add-product"
+              href="/admin/products"
               className="flex items-center justify-between w-full p-3 text-sm font-medium text-gray-600 border border-gray-50 rounded-xl hover:bg-black hover:text-white transition-all group"
             >
               <span className="flex items-center gap-2">
@@ -115,7 +115,7 @@ export default function AdminDashboardPage() {
               <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
             </Link>
             <Link
-              href="/admin/add-blog"
+              href="/admin/blogs"
               className="flex items-center justify-between w-full p-3 text-sm font-medium text-gray-600 border border-gray-50 rounded-xl hover:bg-black hover:text-white transition-all group"
             >
               <span className="flex items-center gap-2">

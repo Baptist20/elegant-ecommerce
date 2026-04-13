@@ -7,7 +7,10 @@ const BlogSchema = new Schema(
     content: { type: String, required: true },
     author: { type: String, default: "Admin" },
     thumbnail: String,
-    category: String, // e.g., 'Decor Tips'
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: "BlogCategory",
+    },
   },
   { timestamps: true },
 );
