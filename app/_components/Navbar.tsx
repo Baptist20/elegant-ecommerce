@@ -36,7 +36,10 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const { isAuthenticated, user, isLoading } = useKindeBrowserClient();
+  const { isAuthenticated, user, isLoading, getPermission } =
+    useKindeBrowserClient();
+
+  const isAdmin = getPermission("is-admin");
 
   const pathname = usePathname();
 
@@ -85,7 +88,7 @@ export default function Navbar() {
                 onClick={() => setIsCartOpen(true)}
                 className="flex items-center group"
               >
-                <div className="relative p-1">
+                <div className={isAdmin ? "hidden" : "relative p-1"}>
                   <ShoppingBag className="h-6 w-6 text-black" />
                   <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
                     2
@@ -120,8 +123,13 @@ export default function Navbar() {
                   </button>
                 </div>
 
-                {/* Search Bar */}
-                <div className="flex items-center px-4 gap-3 w-full h-12 bg-white border border-[#6C7275] rounded-lg focus-within:border-black transition-colors">
+                {/* Search Bar - only visible on /shop page */}
+                <div
+                  className={clsx(
+                    "flex items-center px-4 gap-3 w-full h-12 bg-white border border-[#6C7275] rounded-lg focus-within:border-black transition-colors",
+                    pathname !== "/shop" && "hidden",
+                  )}
+                >
                   <Search className="w-5 h-5 text-[#6C7275]" />
                   <input
                     type="text"
@@ -166,7 +174,7 @@ export default function Navbar() {
                       <p className="font-medium text-lg text-[#6C7275] group-hover:text-black">
                         Cart
                       </p>
-                      <div className="relative">
+                      <div className={isAdmin ? "hidden" : "relative"}>
                         <ShoppingBag
                           className="w-6 h-6 text-[#6C7275] group-hover:text-black"
                           onClick={() => setIsCartOpen(true)}
@@ -261,7 +269,13 @@ export default function Navbar() {
 
             {/* 3. Icon Group: Search, Profile, Cart */}
             <div className="flex items-center gap-4">
-              <button className="p-1 hover:opacity-70 transition-opacity">
+              {/* Search button - only visible on /shop page */}
+              <button
+                className={clsx(
+                  "p-1 hover:opacity-70 transition-opacity",
+                  pathname !== "/shop" && "hidden",
+                )}
+              >
                 <Search
                   className="w-6 h-6 text-[#141718] cursor-pointer"
                   strokeWidth={1.5}
@@ -283,7 +297,7 @@ export default function Navbar() {
                     onClick={() => setIsCartOpen(true)}
                     className="flex items-center gap-1 p-1 group cursor-pointer"
                   >
-                    <div className="relative">
+                    <div className={isAdmin ? "hidden" : "relative"}>
                       <ShoppingBag
                         className="w-6 h-6 text-[#141718]"
                         strokeWidth={1.5}

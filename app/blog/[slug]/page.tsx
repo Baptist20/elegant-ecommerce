@@ -90,7 +90,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           {blog.category && (
             <div className="mb-4">
               <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-                {(blog.category as any).name}
+                {(blog.category as { name: string }).name}
               </span>
             </div>
           )}
@@ -121,7 +121,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
         {/* Thumbnail Image */}
         {blog.thumbnail && (
-          <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] mb-8 md:mb-12 rounded-lg overflow-hidden bg-gray-100">
+          <div className="relative w-full h-[200px] md:h-[280px] lg:h-[350px] mb-8 md:mb-12 rounded-lg overflow-hidden bg-gray-100">
             <Image
               src={blog.thumbnail}
               alt={blog.title}

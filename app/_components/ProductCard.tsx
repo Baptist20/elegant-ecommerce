@@ -1,18 +1,18 @@
 import React from "react";
 import Image from "next/image";
-import { Star, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import { inter } from "../utils/font";
 
 export default function ProductCard({
   name,
   image,
   price,
-  rating,
+  isAdmin = false,
 }: {
   name: string;
   image: string;
   price: number;
-  rating: number;
+  isAdmin?: boolean;
 }) {
   const blurData =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+ZNPQAIXwM496Xn8QAAAABJRU5ErkJggg==";
@@ -31,10 +31,12 @@ export default function ProductCard({
           </span>
         </div>
 
-        {/* Wishlist Button */}
-        <button className="absolute top-4 right-4 z-20 p-1.5 bg-white rounded-full shadow-sm lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500">
-          <Heart className="w-5 h-5 cursor-pointer" />
-        </button>
+        {/* Wishlist Button (Hidden for admins) */}
+        {!isAdmin && (
+          <button className="absolute top-4 right-4 z-20 p-1.5 bg-white rounded-full shadow-sm lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500">
+            <Heart className="w-5 h-5 cursor-pointer" />
+          </button>
+        )}
 
         {/* Product Image */}
         <Image
@@ -47,30 +49,18 @@ export default function ProductCard({
           className="object-cover lg:group-hover:scale-105 lg:transition-transform lg:duration-500"
         />
 
-        {/* Add to Cart Hover Button */}
-        <div className="absolute inset-x-4 bottom-4 z-20 lg:opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-          <button className="w-full py-2.5 bg-[#141718] text-white rounded-lg font-medium text-sm hover:bg-[#232627] cursor-pointer">
-            Add to cart
-          </button>
-        </div>
+        {/* Add to Cart Hover Button (Hidden for admins) */}
+        {!isAdmin && (
+          <div className="absolute inset-x-4 bottom-4 z-20 lg:opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+            <button className="w-full py-2.5 bg-[#141718] text-white rounded-lg font-medium text-sm hover:bg-[#232627] cursor-pointer">
+              Add to cart
+            </button>
+          </div>
+        )}
       </div>
 
       {/* --- CONTENT SECTION --- */}
       <div className="mt-3 flex flex-col gap-1">
-        {/* Rating */}
-        <div className="flex items-center gap-0.5">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              className={`w-3.5 h-3.5 ${
-                i < rating
-                  ? "fill-[#141718] text-[#141718]" // Filled stars
-                  : "fill-transparent text-[#6C7275]" // Unfilled stars
-              }`}
-            />
-          ))}
-        </div>
-
         {/* Name */}
         <h4
           className={`${inter.className} font-semibold text-base text-[#141718] truncate`}

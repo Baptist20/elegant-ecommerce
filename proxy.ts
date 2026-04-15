@@ -28,7 +28,19 @@ export default withAuth(
   },
   {
     isReturnToCurrentPage: true,
-    publicPaths: ["/", "/contact", "/blog", "/about", "/shop", "/api/auth"],
+    publicPaths: [
+      "/",
+      "/contact",
+      "/blog",
+      "/about",
+      "/shop",
+      "/api/auth",
+      "/api/products",
+      "/api/blogs",
+      "/api/blogs/*",
+      "/api/wishlist",
+      "/api/newsletter",
+    ],
   },
 );
 

@@ -183,13 +183,94 @@ export async function POST(req: NextRequest) {
 }
 
 // GET all products with category details
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await connectDB();
-    const products = await Product.find({})
-      .populate("category", "name slug")
-      .sort({ createdAt: -1 });
-    return NextResponse.json(products, { status: 200 });
+
+    // Get query parameters
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get("query") || "";
+    const category = searchParams.get("category") || "";
+    const price = searchParams.get("price") || "";
+    const sort = searchParams.get("sort") || "-createdAt";
+    const limit = searchParams.get("limit") || "";
+    const page = searchParams.get("page") || "1";
+
+    // Build filter object
+    const filter: any = {};
+
+    // Search by name
+    if (query) {
+      filter.name = { $regex: query, $options: "i" };
+    }
+
+    // Filter by category
+    if (category) {
+      filter.category = category;
+    }
+
+    // Filter by price range
+    if (price) {
+      if (price === "0-100") {
+        filter.price = { $gte: 0, $lte: 100 };
+      } else if (price === "100-200") {
+        filter.price = { $gte: 100, $lte: 200 };
+      } else if (price === "200+") {
+        filter.price = { $gte: 200 };
+      }
+    }
+
+    // Build sort object
+    let sortObj: any = { createdAt: -1 }; // Default sort
+    if (sort) {
+      if (sort === "-createdAt") {
+        sortObj = { createdAt: -1 };
+      } else if (sort === "createdAt") {
+        sortObj = { createdAt: 1 };
+      } else if (sort === "price") {
+        sortObj = { price: 1 };
+      } else if (sort === "-price") {
+        sortObj = { price: -1 };
+      } else if (sort === "name") {
+        sortObj = { name: 1 };
+      } else if (sort === "-name") {
+        sortObj = { name: -1 };
+      }
+    }
+
+    // Build query
+    let productsQuery = Product.find(filter).populate("category", "name slug");
+
+    // Apply sorting
+    productsQuery = productsQuery.sort(sortObj);
+
+    // Apply limit if specified
+    if (limit && !isNaN(parseInt(limit))) {
+      productsQuery = productsQuery.limit(parseInt(limit));
+    }
+
+    // Apply pagination
+    const pageNum = parseInt(page);
+    const limitNum = limit ? parseInt(limit) : 12;
+    if (pageNum > 1 && !limit) {
+      productsQuery = productsQuery
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum);
+    }
+
+    const products = await productsQuery;
+
+    // Get total count for pagination
+    const total = await Product.countDocuments(filter);
+
+    return NextResponse.json(products, {
+      status: 200,
+      headers: {
+        "X-Total-Count": total.toString(),
+        "X-Page": page,
+        "X-Limit": limit || "12",
+      },
+    });
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(

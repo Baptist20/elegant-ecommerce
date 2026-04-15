@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { poppins, inter } from "../utils/font";
@@ -21,9 +22,22 @@ interface Product {
 }
 
 export default function NewArrivals() {
+  const { user, getPermission } = useKindeBrowserClient();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (user) {
+        const permission = await getPermission("is-admin");
+        setIsAdmin(permission?.isGranted || false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user, getPermission]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -155,7 +169,7 @@ export default function NewArrivals() {
                       name={product.name}
                       image={product.images?.[0] || "/placeholder-product.png"}
                       price={product.price}
-                      rating={product.rating || 4} // Default rating if not provided
+                      isAdmin={isAdmin}
                     />
                   </CarouselItem>
                 ))}
