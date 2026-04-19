@@ -67,11 +67,11 @@ export default function Newsletter() {
       {/* 1. Background Image with Blending */}
       {/* Note: Using two images with multiply blend mode as per your Figma CSS */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src="/newsletter-banner.png" // 6528420a4a039.jpg
+        {/* Temporary fix: Using img tag instead of Next.js Image */}
+        <img
+          src="/newsletter-banner.png"
           alt="Newsletter Background"
-          fill
-          className="object-cover opacity-20 mix-blend-multiply"
+          className="w-full h-full object-cover opacity-20 mix-blend-multiply"
         />
       </div>
 

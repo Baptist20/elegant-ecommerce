@@ -9,6 +9,8 @@ interface CartItemProps {
   price: number;
   quantity: number;
   image: string;
+  onRemove: () => void;
+  onUpdateQuantity: (newQuantity: number) => void;
 }
 
 export default function CartItem({
@@ -17,7 +19,17 @@ export default function CartItem({
   price,
   quantity,
   image,
+  onRemove,
+  onUpdateQuantity,
 }: CartItemProps) {
+  const handleDecrement = () => {
+    onUpdateQuantity(quantity - 1);
+  };
+
+  const handleIncrement = () => {
+    onUpdateQuantity(quantity + 1);
+  };
+
   return (
     <div className="flex flex-row justify-between items-center py-6 w-full max-w-[376px] border-b border-[#E8ECEF]">
       {/* 1. Content Area (Image + Info) */}
@@ -49,7 +61,10 @@ export default function CartItem({
 
           {/* Small Quantity Button */}
           <div className="flex items-center justify-between w-20 h-8 px-2 border border-[#6C7275] rounded-sm">
-            <button className="hover:text-black text-[#121212] transition-colors">
+            <button
+              onClick={handleDecrement}
+              className="hover:text-black text-[#121212] transition-colors"
+            >
               <Minus className="w-3.5 h-3.5" />
             </button>
             <span
@@ -57,7 +72,10 @@ export default function CartItem({
             >
               {quantity}
             </span>
-            <button className="hover:text-black text-[#121212] transition-colors">
+            <button
+              onClick={handleIncrement}
+              className="hover:text-black text-[#121212] transition-colors"
+            >
               <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -71,7 +89,10 @@ export default function CartItem({
         >
           ${price.toFixed(2)}
         </span>
-        <button className="text-[#6C7275] hover:text-red-500 transition-colors">
+        <button
+          onClick={onRemove}
+          className="text-[#6C7275] hover:text-red-500 transition-colors"
+        >
           <X className="w-6 h-6" strokeWidth={1.5} />
         </button>
       </div>

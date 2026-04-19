@@ -192,21 +192,16 @@ export default function AdminCategoriesPage() {
         fetchBlogCategories();
       } else {
         url = "/api/categories";
-        const formDataToSend = new FormData();
-        formDataToSend.append("name", formData.name);
-        formDataToSend.append("description", formData.description);
-
-        if (editingCategory) {
-          formDataToSend.append("id", editingCategory._id);
-        }
-
-        if (formData.image) {
-          formDataToSend.append("image", formData.image);
-        }
-
         const response = await fetch(url, {
           method,
-          body: formDataToSend,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: editingCategory?._id,
+            name: formData.name,
+            description: formData.description,
+          }),
         });
 
         const result = await response.json();
@@ -643,60 +638,6 @@ export default function AdminCategoriesPage() {
                 disabled={isLoading}
               />
             </div>
-
-            {/* Image Upload (Product Categories Only) */}
-            {formData.type === "product" && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-[#141718]">
-                    Category Image (optional)
-                  </label>
-                  {formData.imagePreview && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={removeImage}
-                      className="h-6 px-2 text-xs"
-                    >
-                      Remove
-                    </Button>
-                  )}
-                </div>
-
-                {!formData.imagePreview ? (
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleFileChange}
-                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#141718] file:text-white hover:file:bg-black"
-                    disabled={isLoading}
-                  />
-                ) : (
-                  <div className="relative">
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                      <img
-                        src={formData.imagePreview}
-                        alt="Category image preview"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={removeImage}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                )}
-
-                <p className="text-xs text-gray-500">
-                  Recommended size: 400x400px (JPG, PNG, WebP, max 5MB)
-                </p>
-              </div>
-            )}
 
             {/* Info Note */}
             {formData.type === "blog" && (

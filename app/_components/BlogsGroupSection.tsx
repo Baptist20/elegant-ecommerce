@@ -20,7 +20,19 @@ interface Blog {
   updatedAt: string;
 }
 
-export default function BlogsGroupSection() {
+interface BlogsGroupSectionProps {
+  query?: string;
+  sort?: string;
+  category?: string;
+  page?: string;
+}
+
+export default function BlogsGroupSection({
+  query = "",
+  sort = "",
+  category = "",
+  page = "1",
+}: BlogsGroupSectionProps) {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +41,16 @@ export default function BlogsGroupSection() {
     const fetchBlogs = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("/api/blogs");
+
+        // Build query params
+        const params = new URLSearchParams();
+        if (query) params.set("query", query);
+        if (sort) params.set("sort", sort);
+        if (category) params.set("category", category);
+        if (page && page !== "1") params.set("page", page);
+
+        const url = `/api/blogs?${params.toString()}`;
+        const response = await fetch(url);
 
         if (!response.ok) {
           throw new Error(`Failed to fetch blogs: ${response.status}`);
@@ -46,7 +67,7 @@ export default function BlogsGroupSection() {
     };
 
     fetchBlogs();
-  }, []);
+  }, [query, sort, category, page]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -146,7 +167,7 @@ export default function BlogsGroupSection() {
             </button>
 
             {/* Page Numbers Mapping */}
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((page) => {
+            {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((page) => {
               const isActive = page === 1; // You'll replace this with state like: currentPage === page
 
               return (
@@ -162,7 +183,7 @@ export default function BlogsGroupSection() {
                   {page}
                 </button>
               );
-            })}
+            })} */}
 
             {/* Next Button */}
             <button className="flex items-center justify-center w-10 h-10 rounded-sm border border-[#EAEAEA] hover:border-[#121212] transition-colors group cursor-pointer">

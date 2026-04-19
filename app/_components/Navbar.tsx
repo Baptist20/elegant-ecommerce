@@ -2,7 +2,7 @@
 
 import { CircleUser, Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { poppins, space_Grotesk } from "../utils/font";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
@@ -35,13 +35,26 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const { isAuthenticated, user, isLoading, getPermission } =
     useKindeBrowserClient();
 
-  const isAdmin = getPermission("is-admin");
-
   const pathname = usePathname();
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!isAuthenticated) {
+        setIsAdmin(false);
+        return;
+      }
+
+      const permission = await getPermission("is-admin");
+      setIsAdmin(permission?.isGranted || false);
+    };
+
+    checkAdminStatus();
+  }, [getPermission, isAuthenticated]);
 
   return (
     <>
@@ -90,9 +103,9 @@ export default function Navbar() {
               >
                 <div className={isAdmin ? "hidden" : "relative p-1"}>
                   <ShoppingBag className="h-6 w-6 text-black" />
-                  <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+                  {/* <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
                     2
-                  </span>
+                  </span> */}
                 </div>
               </button>
             ) : (
@@ -179,9 +192,9 @@ export default function Navbar() {
                           className="w-6 h-6 text-[#6C7275] group-hover:text-black"
                           onClick={() => setIsCartOpen(true)}
                         />
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] text-white">
+                        {/* <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] text-white">
                           2
-                        </span>
+                        </span> */}
                       </div>
                     </Link>
 
@@ -302,9 +315,9 @@ export default function Navbar() {
                         className="w-6 h-6 text-[#141718]"
                         strokeWidth={1.5}
                       />
-                      <span className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#141718] text-[12px] font-bold text-white">
+                      {/* <span className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#141718] text-[12px] font-bold text-white">
                         2
-                      </span>
+                      </span> */}
                     </div>
                   </button>
 

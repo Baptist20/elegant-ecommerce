@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import ShopToolbar from "./ShopToolbar";
 import ProductCard from "./ProductCard";
-import { redirect } from "next/navigation";
 
 interface Product {
   _id: string;
@@ -125,13 +124,11 @@ export default function ShopProductSection({
       <div className="flex flex-col items-start p-0 gap-10 w-full max-w-[1120px] h-auto flex-none">
         <ShopToolbar />
         <div className="flex flex-col justify-center flex-wrap items-center md:items-start gap-20 w-full max-w-[1120px] h-auto flex-none">
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full"
-            onClick={() => redirect("/shop/[id]")}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
             {products.map((product) => (
               <ProductCard
                 key={product._id}
+                id={product._id}
                 name={product.name}
                 image={product.images?.[0] || "/placeholder-product.png"}
                 price={product.price}

@@ -166,6 +166,7 @@ export default function NewArrivals() {
                     className="pl-6 basis-auto"
                   >
                     <ProductCard
+                      id={product._id}
                       name={product.name}
                       image={product.images?.[0] || "/placeholder-product.png"}
                       price={product.price}

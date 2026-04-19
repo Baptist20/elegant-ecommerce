@@ -1,14 +1,19 @@
 import React from "react";
 import Image from "next/image";
-import { Heart } from "lucide-react";
+import { ArrowUpRight, Heart } from "lucide-react";
+import Link from "next/link";
 import { inter } from "../utils/font";
+import { toast } from "sonner";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 export default function ProductCard({
+  id,
   name,
   image,
   price,
   isAdmin = false,
 }: {
+  id: string;
   name: string;
   image: string;
   price: number;
@@ -17,8 +22,71 @@ export default function ProductCard({
   const blurData =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+ZNPQAIXwM496Xn8QAAAABJRU5ErkJggg==";
 
+  const { isAuthenticated } = useKindeBrowserClient();
+
+  const handleWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isAuthenticated) {
+      toast.error("Please log in to add items to your wishlist");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/wishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: id }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        toast.error(data.error || "Unable to add to wishlist");
+        return;
+      }
+
+      toast.success("Added to wishlist");
+    } catch {
+      toast.error("Something went wrong while adding to wishlist");
+    }
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isAuthenticated) {
+      toast.error("Please log in to add items to your cart");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: id, quantity: 1 }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        toast.error(data.error || "Unable to add item to cart");
+        return;
+      }
+
+      toast.success("Product added to cart");
+    } catch {
+      toast.error("Something went wrong while adding to cart");
+    }
+  };
+
   return (
-    <div className="flex flex-col w-[262px] h-[433px] group">
+    <Link
+      href={`/shop/${id}`}
+      className="group flex h-[433px] w-[262px] flex-col"
+    >
       {/* --- IMAGE CONTAINER --- */}
       <div className="relative w-full h-[349px] bg-[#F3F5F7] overflow-hidden">
         {/* Badges Layout */}
@@ -31,9 +99,25 @@ export default function ProductCard({
           </span>
         </div>
 
+        {/* Arrow Button for Product Detail Navigation */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = `/shop/${id}`;
+          }}
+          className="absolute top-4 right-4 z-20 p-1.5 bg-white rounded-full shadow-sm lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-100"
+          aria-label="View product details"
+        >
+          <ArrowUpRight className="w-5 h-5 cursor-pointer" />
+        </button>
+
         {/* Wishlist Button (Hidden for admins) */}
         {!isAdmin && (
-          <button className="absolute top-4 right-4 z-20 p-1.5 bg-white rounded-full shadow-sm lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500">
+          <button
+            onClick={handleWishlist}
+            className="absolute top-12 right-4 z-20 p-1.5 bg-white rounded-full shadow-sm lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500"
+          >
             <Heart className="w-5 h-5 cursor-pointer" />
           </button>
         )}
@@ -52,7 +136,10 @@ export default function ProductCard({
         {/* Add to Cart Hover Button (Hidden for admins) */}
         {!isAdmin && (
           <div className="absolute inset-x-4 bottom-4 z-20 lg:opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-            <button className="w-full py-2.5 bg-[#141718] text-white rounded-lg font-medium text-sm hover:bg-[#232627] cursor-pointer">
+            <button
+              onClick={handleAddToCart}
+              className="w-full py-2.5 bg-[#141718] text-white rounded-lg font-medium text-sm hover:bg-[#232627] cursor-pointer"
+            >
               Add to cart
             </button>
           </div>
@@ -82,6 +169,6 @@ export default function ProductCard({
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

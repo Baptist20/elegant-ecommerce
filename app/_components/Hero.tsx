@@ -127,12 +127,11 @@ export default function Hero() {
             {carouselImage.map((item) => (
               <CarouselItem key={item.id}>
                 <div className="relative w-full aspect-[311/304] md:aspect-[1120/536] overflow-hidden rounded-sm">
-                  <Image
+                  {/* Temporary fix: Using img tag instead of Next.js Image */}
+                  <img
                     src={item.href}
                     alt="Interior Decor"
-                    fill
-                    className="object-cover"
-                    priority
+                    className="w-full h-full object-cover"
                   />
                   {/* Figma's Linear Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#343839]/40" />

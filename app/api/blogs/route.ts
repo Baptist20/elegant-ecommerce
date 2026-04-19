@@ -168,13 +168,73 @@ export async function POST(req: NextRequest) {
 }
 
 // GET all blogs with category details
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await connectDB();
-    const blogs = await Blog.find({})
-      .populate("category", "name slug")
-      .sort({ createdAt: -1 });
-    return NextResponse.json(blogs, { status: 200 });
+
+    // Get query parameters
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get("query") || "";
+    const category = searchParams.get("category") || "";
+    const sort = searchParams.get("sort") || "-createdAt";
+    const limit = searchParams.get("limit") || "";
+    const page = searchParams.get("page") || "1";
+
+    // Build filter object
+    const filter: any = {};
+
+    // Search by title or content
+    if (query) {
+      filter.$or = [
+        { title: { $regex: query, $options: "i" } },
+        { content: { $regex: query, $options: "i" } },
+      ];
+    }
+
+    // Filter by category
+    if (category) {
+      filter.category = category;
+    }
+
+    // Build sort object (only newest and oldest)
+    let sortObj: any = { createdAt: -1 }; // Default sort (newest)
+    if (sort === "-createdAt") {
+      sortObj = { createdAt: -1 }; // Newest
+    } else if (sort === "createdAt") {
+      sortObj = { createdAt: 1 }; // Oldest
+    }
+
+    // Build query
+    let blogsQuery = Blog.find(filter).populate("category", "name slug");
+
+    // Apply sorting
+    blogsQuery = blogsQuery.sort(sortObj);
+
+    // Apply limit if specified
+    if (limit && !isNaN(parseInt(limit))) {
+      blogsQuery = blogsQuery.limit(parseInt(limit));
+    }
+
+    // Apply pagination
+    const pageNum = parseInt(page);
+    const limitNum = limit ? parseInt(limit) : 12;
+    if (pageNum > 1 && !limit) {
+      blogsQuery = blogsQuery.skip((pageNum - 1) * limitNum).limit(limitNum);
+    }
+
+    const blogs = await blogsQuery;
+
+    // Get total count for pagination
+    const total = await Blog.countDocuments(filter);
+
+    return NextResponse.json(blogs, {
+      status: 200,
+      headers: {
+        "X-Total-Count": total.toString(),
+        "X-Page": page,
+        "X-Limit": limit || "12",
+      },
+    });
   } catch (error) {
     console.error("Error fetching blogs:", error);
     return NextResponse.json(
