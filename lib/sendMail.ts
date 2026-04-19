@@ -86,28 +86,28 @@ export async function sendOrderConfirmationEmail(
 }
 
 // Password reset email template
-export async function sendPasswordResetEmail(
-  email: string,
-  resetToken: string,
-) {
-  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`;
-  const subject = "Reset Your Password";
-  const html = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h1 style="color: #141718;">Reset Your Password</h1>
-      <p>Click the link below to reset your password:</p>
-      <p>
-        <a href="${resetUrl}" style="background-color: #141718; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-          Reset Password
-        </a>
-      </p>
-      <p>This link will expire in 1 hour.</p>
-      <hr style="border: 1px solid #eaeaea; margin: 20px 0;">
-      <p style="color: #6C7275; font-size: 12px;">
-        If you didn't request a password reset, please ignore this email.
-      </p>
-    </div>
-  `;
+// export async function sendPasswordResetEmail(
+//   email: string,
+//   resetToken: string,
+// ) {
+//   const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`;
+//   const subject = "Reset Your Password";
+//   const html = `
+//     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+//       <h1 style="color: #141718;">Reset Your Password</h1>
+//       <p>Click the link below to reset your password:</p>
+//       <p>
+//         <a href="${resetUrl}" style="background-color: #141718; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+//           Reset Password
+//         </a>
+//       </p>
+//       <p>This link will expire in 1 hour.</p>
+//       <hr style="border: 1px solid #eaeaea; margin: 20px 0;">
+//       <p style="color: #6C7275; font-size: 12px;">
+//         If you didn't request a password reset, please ignore this email.
+//       </p>
+//     </div>
+//   `;
 
-  return sendEmail({ to: email, subject, html });
-}
+//   return sendEmail({ to: email, subject, html });
+// }

@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { inter, poppins } from "../utils/font";
+import { loadStripe } from "@stripe/stripe-js";
+
+// Initialize Stripe
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",
+);
 
 export default function CheckoutPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [cart, setCart] = useState<any>(null);
   const [formData, setFormData] = useState({
     country: "",
     state: "",
@@ -21,51 +28,55 @@ export default function CheckoutPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await fetch("/api/cart", { cache: "no-store" });
+        if (!response.ok) {
+          toast.error("Unable to fetch cart");
+          return;
+        }
+        const data = await response.json();
+        setCart(data);
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+        toast.error("Unable to load cart");
+      }
+    };
+
+    fetchCart();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // 1. Fetch current cart to get items and total
-      const cartRes = await fetch("/api/cart", { cache: "no-store" });
-      if (!cartRes.ok) {
-        toast.error("Unable to fetch cart");
-        return;
-      }
-      const cart = await cartRes.json();
-
-      if (!cart.items?.length) {
+      if (!cart?.items?.length) {
         toast.error("Your cart is empty");
         return;
       }
 
-      // 2. Create order
-      const orderRes = await fetch("/api/orders", {
+      // Create Stripe checkout session
+      const response = await fetch("/api/stripe/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: cart.items,
-          totalAmount: cart.items.reduce(
-            (sum: number, item: any) =>
-              sum + (item.productId?.price || 0) * item.quantity,
-            0,
-          ),
-          shippingAddress: formData,
-        }),
+        body: JSON.stringify({ shippingAddress: formData }),
       });
 
-      const orderData = await orderRes.json();
+      const data = await response.json();
 
-      if (!orderRes.ok) {
-        toast.error(orderData.error || "Failed to create order");
+      if (!response.ok) {
+        toast.error(data.error || "Failed to create checkout session");
         return;
       }
 
-      // 3. Clear cart after successful order
-      await fetch("/api/cart/clear", { method: "POST" });
-
-      toast.success("Order placed successfully!");
-      router.push(`/user-dashboard/orders/${orderData._id}`);
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.assign(data.url);
+      } else {
+        toast.error("Stripe session URL not found");
+      }
     } catch (error) {
       console.error("Checkout error:", error);
       toast.error("Something went wrong during checkout");
@@ -84,7 +95,11 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Shipping Address Form */}
           <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6"
+              id="checkout-form"
+            >
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h2 className={`${poppins.className} text-xl font-medium mb-4`}>
                   Shipping Address
@@ -194,38 +209,80 @@ export default function CheckoutPage() {
               <h2 className={`${poppins.className} text-xl font-medium mb-4`}>
                 Order Summary
               </h2>
-              <p className={`${inter.className} text-gray-600 mb-6`}>
-                Your order total will be calculated based on your cart items.
-                Shipping is free.
-              </p>
-              <div className="border-t border-gray-300 pt-4">
-                <div className="flex justify-between mb-2">
-                  <span className={`${inter.className} text-gray-700`}>
-                    Subtotal
-                  </span>
-                  <span className={`${inter.className} font-medium`}>
-                    Calculated at checkout
-                  </span>
+              {cart ? (
+                <>
+                  <div className="space-y-3 mb-4">
+                    {cart.items.map((item: any) => (
+                      <div key={item._id} className="flex justify-between">
+                        <div>
+                          <p className={`${inter.className} text-sm`}>
+                            {item.productId?.name} × {item.quantity}
+                          </p>
+                        </div>
+                        <p className={`${inter.className} text-sm font-medium`}>
+                          $
+                          {(
+                            (item.productId?.price || 0) * item.quantity
+                          ).toFixed(2)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="border-t border-gray-300 pt-4">
+                    <div className="flex justify-between mb-2">
+                      <span className={`${inter.className} text-gray-700`}>
+                        Subtotal
+                      </span>
+                      <span className={`${inter.className} font-medium`}>
+                        $
+                        {cart.items
+                          .reduce(
+                            (sum: number, item: any) =>
+                              sum +
+                              (item.productId?.price || 0) * item.quantity,
+                            0,
+                          )
+                          .toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between mb-2">
+                      <span className={`${inter.className} text-gray-700`}>
+                        Shipping
+                      </span>
+                      <span
+                        className={`${inter.className} font-medium text-green-600`}
+                      >
+                        Free
+                      </span>
+                    </div>
+                    <div className="flex justify-between mt-4 pt-4 border-t border-gray-300">
+                      <span
+                        className={`${poppins.className} text-lg font-medium`}
+                      >
+                        Total
+                      </span>
+                      <span
+                        className={`${poppins.className} text-lg font-medium`}
+                      >
+                        $
+                        {cart.items
+                          .reduce(
+                            (sum: number, item: any) =>
+                              sum +
+                              (item.productId?.price || 0) * item.quantity,
+                            0,
+                          )
+                          .toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-4">
+                  <div className="h-4 w-32 bg-gray-200 animate-pulse rounded mx-auto mb-2"></div>
+                  <div className="h-4 w-24 bg-gray-200 animate-pulse rounded mx-auto"></div>
                 </div>
-                <div className="flex justify-between mb-2">
-                  <span className={`${inter.className} text-gray-700`}>
-                    Shipping
-                  </span>
-                  <span
-                    className={`${inter.className} font-medium text-green-600`}
-                  >
-                    Free
-                  </span>
-                </div>
-                <div className="flex justify-between mt-4 pt-4 border-t border-gray-300">
-                  <span className={`${poppins.className} text-lg font-medium`}>
-                    Total
-                  </span>
-                  <span className={`${poppins.className} text-lg font-medium`}>
-                    Calculated at checkout
-                  </span>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

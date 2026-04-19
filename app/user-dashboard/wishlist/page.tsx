@@ -1,10 +1,9 @@
 import React from "react";
-import WishlistCard from "../../_components/WishlistCard";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import connectDB from "@/lib/db";
 import { User } from "@/models/User";
-import { Product } from "@/models/Product"; // Ensure Product model is registered
-import { ProductType } from "@/app/utils/types";
+import { Product } from "@/models/Product";
+import Link from "next/link";
 
 export default async function WishlistPage() {
   const { getUser } = getKindeServerSession();
@@ -12,7 +11,7 @@ export default async function WishlistPage() {
 
   if (!kindeUser || !kindeUser.id) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="min-h-screen flex items-center justify-center">
         <p className="text-xl text-[#6C7275]">
           Please log in to view your wishlist.
         </p>
@@ -22,52 +21,78 @@ export default async function WishlistPage() {
 
   await connectDB();
 
-  // Explicitly import Product model to ensure it's registered with Mongoose
-  // This resolves the MissingSchemaError
-  const user = await User.findOne({ kindeUserId: kindeUser.id }).populate(
-    "wishlist",
-  );
+  const user = await User.findOne({ kindeUserId: kindeUser.id }).populate({
+    path: "wishlist",
+    model: Product,
+  });
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="min-h-screen flex items-center justify-center">
         <p className="text-xl text-[#6C7275]">User not found in database.</p>
       </div>
     );
   }
 
-  const wishlistItems: ProductType[] = user.wishlist;
+  const wishlistItems = user.wishlist || [];
 
   return (
-    <div className="flex flex-col items-start w-full max-w-[851px] p-0 md:px-[72px] gap-10">
-      <h2 className="text-2xl font-semibold text-black">Your Wishlist</h2>
+    <div className="min-h-screen bg-white px-4 py-8 md:px-8 lg:px-16">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-medium mb-8">Your Wishlist</h1>
 
-      <div className="w-full overflow-x-auto">
-        <div className="flex flex-col items-start w-full min-w-max">
-          {/* Table Header */}
-          <div className="flex justify-between items-center w-full px-0 pb-2 pl-8 gap-14 border-b border-[#E8ECEF] text-sm font-normal leading-tight text-[#6C7275]">
-            <p className="flex-none w-[160px]">Product</p>
-            <p className="flex-none w-[120px]">Price</p>
-            <p className="flex-none w-[137px]">Action</p>
+        {wishlistItems.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-xl text-gray-600 mb-4">
+              Your wishlist is empty.
+            </p>
+            <Link
+              href="/shop"
+              className="inline-block px-6 py-3 bg-black text-white font-medium rounded-md hover:bg-gray-800"
+            >
+              Start Shopping
+            </Link>
           </div>
-
-          {wishlistItems.length === 0 ? (
-            <div className="flex items-center justify-center w-full py-10">
-              <p className="text-xl text-[#6C7275]">Your wishlist is empty.</p>
-            </div>
-          ) : (
-            wishlistItems.map((item) => (
-              <WishlistCard
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {wishlistItems.map((item: any) => (
+              <div
                 key={item._id.toString()}
-                imageSrc={item.images[0]}
-                altText={item.name}
-                productName={item.name}
-                productColor={`Color: ${item.colors[0]}`}
-                price={`$${item.price.toFixed(2)}`}
-              />
-            ))
-          )}
-        </div>
+                className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+              >
+                <div className="aspect-square bg-gray-100 relative">
+                  <img
+                    src={item.images?.[0] || "/placeholder.jpg"}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-medium text-gray-900 mb-1">
+                    {item.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {item.colors?.[0] ? `Color: ${item.colors[0]}` : "Default"}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">
+                      ${item.price.toFixed(2)}
+                    </span>
+                    <button
+                      onClick={() => {
+                        // Add remove from wishlist functionality
+                        console.log("Remove from wishlist:", item._id);
+                      }}
+                      className="text-red-600 hover:text-red-800 text-sm font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
