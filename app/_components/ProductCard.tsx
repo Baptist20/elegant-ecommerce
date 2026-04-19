@@ -3,8 +3,9 @@ import Image from "next/image";
 import { ArrowUpRight, Heart } from "lucide-react";
 import Link from "next/link";
 import { inter } from "../utils/font";
-import { toast } from "sonner";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import AddToCartButton from "./AddToCartButton";
+import WishlistButton from "./WishlistButton";
 
 export default function ProductCard({
   id,
@@ -23,64 +24,6 @@ export default function ProductCard({
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+ZNPQAIXwM496Xn8QAAAABJRU5ErkJggg==";
 
   const { isAuthenticated } = useKindeBrowserClient();
-
-  const handleWishlist = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!isAuthenticated) {
-      toast.error("Please log in to add items to your wishlist");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/wishlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: id }),
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        toast.error(data.error || "Unable to add to wishlist");
-        return;
-      }
-
-      toast.success("Added to wishlist");
-    } catch {
-      toast.error("Something went wrong while adding to wishlist");
-    }
-  };
-
-  const handleAddToCart = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!isAuthenticated) {
-      toast.error("Please log in to add items to your cart");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: id, quantity: 1 }),
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        toast.error(data.error || "Unable to add item to cart");
-        return;
-      }
-
-      toast.success("Product added to cart");
-    } catch {
-      toast.error("Something went wrong while adding to cart");
-    }
-  };
 
   return (
     <Link
@@ -114,12 +57,12 @@ export default function ProductCard({
 
         {/* Wishlist Button (Hidden for admins) */}
         {!isAdmin && (
-          <button
-            onClick={handleWishlist}
-            className="absolute top-12 right-4 z-20 p-1.5 bg-white rounded-full shadow-sm lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500"
-          >
-            <Heart className="w-5 h-5 cursor-pointer" />
-          </button>
+          <div className="absolute top-12 right-4 z-20">
+            <WishlistButton
+              productId={id}
+              className="p-1.5 bg-white rounded-full shadow-sm lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300"
+            />
+          </div>
         )}
 
         {/* Product Image */}
@@ -136,12 +79,13 @@ export default function ProductCard({
         {/* Add to Cart Hover Button (Hidden for admins) */}
         {!isAdmin && (
           <div className="absolute inset-x-4 bottom-4 z-20 lg:opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-            <button
-              onClick={handleAddToCart}
+            <AddToCartButton
+              productId={id}
+              productName={name}
+              price={price}
+              variant="full"
               className="w-full py-2.5 bg-[#141718] text-white rounded-lg font-medium text-sm hover:bg-[#232627] cursor-pointer"
-            >
-              Add to cart
-            </button>
+            />
           </div>
         )}
       </div>

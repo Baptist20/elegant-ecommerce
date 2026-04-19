@@ -6,6 +6,7 @@ import { poppins, inter } from "@/app/utils/font";
 import connectDB from "@/lib/db";
 import { Blog } from "@/models/Blog";
 import { BlogCategory } from "@/models/BlogCategory";
+import type { Metadata, ResolvingMetadata } from "next";
 
 interface BlogDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -29,7 +30,15 @@ async function getBlogBySlug(slug: string) {
   return JSON.parse(JSON.stringify(blog));
 }
 
-export async function generateMetadata({ params }: BlogDetailPageProps) {
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
 
@@ -40,10 +49,24 @@ export async function generateMetadata({ params }: BlogDetailPageProps) {
     };
   }
 
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || [];
+
   return {
     title: `${blog.title} | Elegant Stores`,
     description: blog.content.substring(0, 160),
     openGraph: {
+      title: blog.title,
+      description: blog.content.substring(0, 160),
+      images: blog.thumbnail
+        ? [blog.thumbnail, ...previousImages]
+        : previousImages,
+      type: "article",
+      publishedTime: blog.createdAt,
+      authors: [blog.author || "Admin"],
+    },
+    twitter: {
+      card: "summary_large_image",
       title: blog.title,
       description: blog.content.substring(0, 160),
       images: blog.thumbnail ? [blog.thumbnail] : [],
@@ -51,7 +74,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps) {
   };
 }
 
-export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
+export default async function BlogDetailPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
 

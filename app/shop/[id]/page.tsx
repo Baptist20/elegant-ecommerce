@@ -2,6 +2,7 @@ import ProductDetailClient from "@/app/_components/ProductDetailClient";
 import connectDB from "@/lib/db";
 import { Product } from "@/models/Product";
 import { notFound } from "next/navigation";
+import type { Metadata, ResolvingMetadata } from "next";
 
 type ProductDocument = {
   _id: { toString(): string };
@@ -62,25 +63,44 @@ async function getProductDetail(id: string) {
   };
 }
 
-export async function generateMetadata({
-  params,
-}: {
+type Props = {
   params: Promise<{ id: string }>;
-}) {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { id } = await params;
   const product = await getProductDetail(id);
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || [];
+  const productImage = product.images?.[0] || "/placeholder.jpg";
 
   return {
     title: `${product.name} | Elegant Shop`,
     description: product.description,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: [productImage, ...previousImages],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description: product.description,
+      images: [productImage],
+    },
+    keywords: [product.categoryName, product.name, "furniture", "home decor"],
   };
 }
 
 export default async function ProductDetailPage({
   params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+  searchParams,
+}: Props) {
   const { id } = await params;
   const product = await getProductDetail(id);
 

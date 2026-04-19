@@ -1,9 +1,10 @@
 import React from "react";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import connectDB from "@/lib/db";
+import { Wishlist } from "@/models/Wishlist";
 import { User } from "@/models/User";
-import { Product } from "@/models/Product";
 import Link from "next/link";
+import RemoveButton from "@/app/_components/RemoveButton"; // We will create this next
 
 export default async function WishlistPage() {
   const { getUser } = getKindeServerSession();
@@ -21,12 +22,9 @@ export default async function WishlistPage() {
 
   await connectDB();
 
-  const user = await User.findOne({ kindeUserId: kindeUser.id }).populate({
-    path: "wishlist",
-    model: Product,
-  });
+  const dbUser = await User.findOne({ kindeUserId: kindeUser.id });
 
-  if (!user) {
+  if (!dbUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-xl text-[#6C7275]">User not found in database.</p>
@@ -34,7 +32,12 @@ export default async function WishlistPage() {
     );
   }
 
-  const wishlistItems = user.wishlist || [];
+  const wishlist = await Wishlist.findOne({ userId: dbUser._id }).populate({
+    path: "products",
+    select: "_id name price images colors", // Added _id explicitly
+  });
+
+  const wishlistItems = wishlist?.products || [];
 
   return (
     <div className="min-h-screen bg-white px-4 py-8 md:px-8 lg:px-16">
@@ -78,15 +81,9 @@ export default async function WishlistPage() {
                     <span className="font-medium">
                       ${item.price.toFixed(2)}
                     </span>
-                    <button
-                      onClick={() => {
-                        // Add remove from wishlist functionality
-                        console.log("Remove from wishlist:", item._id);
-                      }}
-                      className="text-red-600 hover:text-red-800 text-sm font-medium"
-                    >
-                      Remove
-                    </button>
+
+                    {/* CLIENT COMPONENT CALLED HERE */}
+                    <RemoveButton productId={item._id.toString()} />
                   </div>
                 </div>
               </div>

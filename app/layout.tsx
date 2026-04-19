@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "./_components/Navbar";
 import { cn } from "@/lib/utils";
 import Footer from "./_components/Footer";
+import { ToastProvider } from "./_components/ToastProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -40,6 +41,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
+        <ToastProvider />
       </body>
     </html>
   );

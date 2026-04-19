@@ -1,7 +1,7 @@
 import React from "react";
 import ContactUsHeader from "../_components/ContactUsHeader";
 import ContactUsFeature from "../_components/ContactUsFeature";
-import ContactUsDetails from "../_components/ContactUsDetails";
+import ContactForm from "../_components/ContactForm";
 import Values from "../_components/Values";
 
 export default function page() {
@@ -16,7 +16,7 @@ export default function page() {
         {/* Your inner layers (Header, Form, Map, etc.) will go here */}
         <ContactUsHeader />
         <ContactUsFeature />
-        <ContactUsDetails />
+        <ContactForm />
       </div>
       <Values />
     </section>
