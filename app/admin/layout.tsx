@@ -13,23 +13,34 @@ export default async function AdminLayout({
   // 1. Protection Guard
   const { getUser, getPermission } = getKindeServerSession();
   const kindeUser = await getUser();
-  const isAdminPermission = await getPermission("is-admin");
 
-  // Redirect if not logged in or doesn't have Kinde admin permission
+  // Redirect to home if not logged in at all
   if (!kindeUser) {
     redirect("/");
   }
 
-  if (!isAdminPermission) {
-    redirect("/api/auth/login");
+  // Check Kinde permission
+  const adminPermission = await getPermission("is-admin");
+  if (!adminPermission || !adminPermission.isGranted) {
+    redirect("/");
   }
 
-  // 2. Double-check DB role (for total security)
+  // 2. Check for user in database
   await connectDB();
   const dbUser = await User.findOne({ kindeUserId: kindeUser.id });
 
-  if (dbUser?.role !== "admin") {
-    redirect("/");
+  // Check for user before setting admin
+  if (!dbUser) {
+    await User.create({
+      kindeUserId: kindeUser.id,
+      email: kindeUser.email,
+      firstName: kindeUser.given_name,
+      lastName: kindeUser.family_name,
+      role: "admin",
+    });
+  } else if (dbUser.role !== "admin") {
+    dbUser.role = "admin";
+    await dbUser.save();
   }
 
   return (
