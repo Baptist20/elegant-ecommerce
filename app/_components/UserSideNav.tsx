@@ -27,7 +27,7 @@ export default function UserSideNav() {
       <div className="flex flex-col items-center p-0 gap-[6px] w-[131px] h-[120px] flex-none order-0 grow-0">
         {/* Avatar/Edit (Elements/Menu/Avatar Edit) */}
         <div className="relative w-[82px] h-[82px] flex-none order-0 grow-0">
-          <div className="absolute w-20 h-20 left-0 top-0 bg-[#121212] rounded-[93px]">
+          {/* <div className="absolute w-20 h-20 left-0 top-0 bg-[#121212] rounded-[93px]">
             {user?.picture ? (
               <Image
                 // src={user.picture}
@@ -40,12 +40,12 @@ export default function UserSideNav() {
             ) : (
               <div className="w-full h-full bg-[#121212] rounded-[82px]" />
             )}
-          </div>
+          </div> */}
 
           {/* Camera Icon Box */}
-          <div className="absolute flex flex-row items-start p-[7px] gap-[10px] w-[30px] h-[30px] left-[50px] top-[52px] bg-[#141718] border-[1.5px] border-white rounded-[125px] box-border cursor-pointer hover:scale-110 transition-transform">
+          {/* <div className="absolute flex flex-row items-start p-[7px] gap-[10px] w-[30px] h-[30px] left-[50px] top-[52px] bg-[#141718] border-[1.5px] border-white rounded-[125px] box-border cursor-pointer hover:scale-110 transition-transform">
             <Camera className="w-4 h-4 text-[#FEFEFE]" />
-          </div>
+          </div> */}
         </div>
 
         {/* User Name (Sofia Havertz) */}

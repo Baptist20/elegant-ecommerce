@@ -5,7 +5,6 @@ import Link from "next/link";
 import { poppins, inter } from "@/app/utils/font";
 import connectDB from "@/lib/db";
 import { Blog } from "@/models/Blog";
-import { BlogCategory } from "@/models/BlogCategory";
 import type { Metadata, ResolvingMetadata } from "next";
 
 interface BlogDetailPageProps {
@@ -149,7 +148,7 @@ export default async function BlogDetailPage({ params, searchParams }: Props) {
               src={blog.thumbnail}
               alt={blog.title}
               fill
-              className="object-cover"
+              className="object-contain"
               priority
             />
           </div>
@@ -161,24 +160,6 @@ export default async function BlogDetailPage({ params, searchParams }: Props) {
             className={`${inter.className} text-gray-700 leading-relaxed`}
             dangerouslySetInnerHTML={{ __html: blog.content }}
           />
-        </div>
-
-        {/* Share Section */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <h3 className={`${poppins.className} text-lg font-medium mb-4`}>
-            Share this article
-          </h3>
-          <div className="flex items-center gap-4">
-            <button className="px-4 py-2 bg-[#141718] text-white rounded-lg hover:bg-black transition-colors">
-              Share on Twitter
-            </button>
-            <button className="px-4 py-2 bg-[#1877F2] text-white rounded-lg hover:bg-[#166FE5] transition-colors">
-              Share on Facebook
-            </button>
-            <button className="px-4 py-2 bg-[#0077B5] text-white rounded-lg hover:bg-[#006699] transition-colors">
-              Share on LinkedIn
-            </button>
-          </div>
         </div>
       </article>
 

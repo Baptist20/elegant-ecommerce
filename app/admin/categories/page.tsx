@@ -192,16 +192,27 @@ export default function AdminCategoriesPage() {
         fetchBlogCategories();
       } else {
         url = "/api/categories";
+
+        // 1. Initialize FormData using your existing state names
+        const data = new FormData();
+
+        // 2. Append the fields using the keys your backend expects
+        if (editingCategory?._id) {
+          data.append("id", editingCategory._id);
+        }
+        data.append("name", formData.name);
+        data.append("description", formData.description);
+
+        // 3. Append the image file if it exists in your state
+        if (formData.image) {
+          data.append("image", formData.image);
+        }
+
         const response = await fetch(url, {
           method,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: editingCategory?._id,
-            name: formData.name,
-            description: formData.description,
-          }),
+          // Note: Do NOT add 'headers' here.
+          // The browser automatically sets the correct multipart/form-data boundary.
+          body: data,
         });
 
         const result = await response.json();
