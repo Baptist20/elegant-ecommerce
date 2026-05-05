@@ -1,4 +1,3 @@
-import Newsletter from "../_components/NewsLetter";
 import ShopHeader from "../_components/ShopHeader";
 import ShopProductSection from "../_components/ShopProductSection";
 

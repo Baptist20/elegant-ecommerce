@@ -19,6 +19,11 @@ type ProductDocument = {
   };
 };
 
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
 async function getProductDetail(id: string) {
   await connectDB();
 
@@ -62,11 +67,6 @@ async function getProductDetail(id: string) {
     packaging: categoryName,
   };
 }
-
-type Props = {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
 
 export async function generateMetadata(
   { params }: Props,
