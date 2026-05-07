@@ -31,7 +31,7 @@ export default function BannerGrid() {
                 Living Room
               </h3>
               <Link
-                href="/shop/living-room"
+                href="/shop"
                 className={`inline-flex items-center gap-1 pb-1 border-b border-[#141718] ${inter.className} font-medium text-base text-[#141718] group/btn`}
               >
                 Shop Now
@@ -60,7 +60,7 @@ export default function BannerGrid() {
                   Bedroom
                 </h3>
                 <Link
-                  href="/shop/bedroom"
+                  href="/shop"
                   className={`inline-flex items-center gap-1 pb-1 border-b border-[#141718] ${inter.className} font-medium text-base text-[#141718] group/btn`}
                 >
                   Shop Now
@@ -87,7 +87,7 @@ export default function BannerGrid() {
                   Kitchen
                 </h3>
                 <Link
-                  href="/shop/kitchen"
+                  href="/shop"
                   className={`inline-flex items-center gap-1 pb-1 border-b border-[#141718] ${inter.className} font-medium text-base text-[#141718] group/btn`}
                 >
                   Shop Now
