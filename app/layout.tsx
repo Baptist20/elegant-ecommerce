@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
-import { AuthProvider } from "./Authprovider";
+import { AuthProvider } from "./tempProvider";
 import "./globals.css";
 
 import Navbar from "./_components/Navbar";
