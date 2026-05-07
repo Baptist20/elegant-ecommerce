@@ -1,4 +1,6 @@
 import { Schema, model, models } from "mongoose";
+import "./Order";
+import "./Wishlist";
 
 const UserSchema = new Schema(
   {
