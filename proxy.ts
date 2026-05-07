@@ -34,6 +34,7 @@ export default withAuth(
       "/blog",
       "/about",
       "/shop",
+      "/api/*",
       "/api/auth",
       "/api/products",
       "/api/blogs",
