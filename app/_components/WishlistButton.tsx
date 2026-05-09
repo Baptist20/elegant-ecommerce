@@ -34,7 +34,7 @@ export default function WishlistButton({
       toast.success("Added to wishlist!");
     } catch (error) {
       console.error("Error adding to wishlist:", error);
-      toast.error("Something went wrong");
+      toast.error("log in to perform this action");
     } finally {
       setLoading(false);
     }

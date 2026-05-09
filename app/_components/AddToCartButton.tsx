@@ -43,7 +43,7 @@ export default function AddToCartButton({
       toast.success(`${productName} added to cart!`);
     } catch (error) {
       console.error("Error adding to cart:", error);
-      toast.error("Something went wrong");
+      toast.error("Log in to perform tis action");
     } finally {
       setLoading(false);
     }
