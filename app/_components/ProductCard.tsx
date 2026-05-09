@@ -26,7 +26,10 @@ export default function ProductCard({
   const { isAuthenticated } = useKindeBrowserClient();
 
   return (
-    <>
+    <div
+      // href={`/shop/${id}`}
+      className="group flex h-[433px] w-[262px] flex-col"
+    >
       {/* --- IMAGE CONTAINER --- */}
       <div className="relative w-full h-[349px] bg-[#F3F5F7] overflow-hidden">
         {/* Badges Layout */}
@@ -110,6 +113,6 @@ export default function ProductCard({
           </span>
         </div>
       </div>
-    </>
+    </div>
   );
 }
