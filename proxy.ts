@@ -35,6 +35,9 @@ export default withAuth(
       "/about",
       "/shop",
       "/api/*",
+      "/api/auth/kinde_callback", // Add this explicitly
+      "/api/auth/login",
+      "/api/auth/register",
       "/api/blog-categories",
       "/api/categories",
       "/api/auth",
