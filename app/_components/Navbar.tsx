@@ -103,9 +103,6 @@ export default function Navbar() {
               >
                 <div className={isAdmin ? "hidden" : "relative p-1"}>
                   <ShoppingBag className="h-6 w-6 text-black" />
-                  {/* <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
-                    2
-                  </span> */}
                 </div>
               </button>
             ) : (
@@ -179,8 +176,7 @@ export default function Navbar() {
                 {/* Cart Item */}
                 {isAuthenticated ? (
                   <>
-                    <Link
-                      href="/cart"
+                    <button
                       className="flex justify-between items-center py-3 border-b border-[#E8ECEF] group transition-colors"
                       onClick={() => setIsOpen(false)}
                     >
@@ -196,7 +192,7 @@ export default function Navbar() {
                           2
                         </span> */}
                       </div>
-                    </Link>
+                    </button>
 
                     {/* Wishlist Item */}
                     <Link

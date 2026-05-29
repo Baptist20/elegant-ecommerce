@@ -72,13 +72,13 @@ export default function Footer() {
             </p>
             <div className="flex gap-7">
               <Link
-                href="/privacy"
+                href="/"
                 className={`${poppins.className} text-xs font-semibold text-[#FEFEFE] hover:underline`}
               >
                 Privacy Policy
               </Link>
               <Link
-                href="/terms"
+                href="/"
                 className={`${poppins.className} text-xs font-semibold text-[#FEFEFE] hover:underline`}
               >
                 Terms of Use

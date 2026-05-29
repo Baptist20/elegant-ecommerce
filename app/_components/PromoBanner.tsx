@@ -54,7 +54,7 @@ export default function PromoBanner() {
 
             {/* CTA Button */}
             <Link
-              href="/"
+              href="/shop"
               className={`inline-flex items-center gap-1 w-fit pb-1 border-b border-[#141718] ${inter.className} font-medium text-base text-[#141718] group`}
             >
               Shop Now
