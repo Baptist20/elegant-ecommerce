@@ -91,9 +91,12 @@ export default function Navbar() {
                 {user?.given_name}
               </Link>
             ) : (
-              <LoginLink className="text-sm font-medium text-black hover:opacity-70 transition-opacity">
+              // <LoginLink className="text-sm font-medium text-black hover:opacity-70 transition-opacity">
+              //   Login
+              // </LoginLink>
+              <a href="/api/auth/login?post_login_redirect_url=/dashboard">
                 Login
-              </LoginLink>
+              </a>
             )}
 
             {isAuthenticated ? (
@@ -232,9 +235,12 @@ export default function Navbar() {
                     Log out
                   </LogoutLink>
                 ) : (
-                  <LoginLink className="w-full mt-4 py-4 bg-black text-white rounded-lg font-medium text-lg hover:bg-zinc-800 active:scale-[0.98] transition-all text-center">
-                    Log In
-                  </LoginLink>
+                  // <LoginLink className="w-full mt-4 py-4 bg-black text-white rounded-lg font-medium text-lg hover:bg-zinc-800 active:scale-[0.98] transition-all text-center">
+                  //   Log In
+                  // </LoginLink>
+                  <a href="/api/auth/login?post_login_redirect_url=/dashboard">
+                    Login
+                  </a>
                 )}
               </div>
             </div>
@@ -322,9 +328,12 @@ export default function Navbar() {
                   </LogoutLink>
                 </>
               ) : (
-                <LoginLink className="text-sm font-medium text-[#6C7275] hover:text-black transition-colors">
+                // <LoginLink className="text-sm font-medium text-[#6C7275] hover:text-black transition-colors">
+                //   Login
+                // </LoginLink>
+                <a href="/api/auth/login?post_login_redirect_url=/dashboard">
                   Login
-                </LoginLink>
+                </a>
               )}
             </div>
           </div>
