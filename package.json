@@ -19,7 +19,7 @@
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.577.0",
-    "mongoose": "^9.3.2",
+    "mongoose": "^9.11.4",
     "multer": "2.2.0",
     "multer-storage-cloudinary": "^4.0.0",
     "next": "15.5.24",
