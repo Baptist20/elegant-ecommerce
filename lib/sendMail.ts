@@ -10,7 +10,7 @@ interface EmailOptions {
 export async function sendEmail({ to, subject, html, text }: EmailOptions) {
   try {
     // Create transporter
-    const transporter = nodemailer.createTransport({
+    const mailer = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
@@ -18,8 +18,9 @@ export async function sendEmail({ to, subject, html, text }: EmailOptions) {
       },
     });
 
-    // Send email
-    const info = await transporter.sendMail({
+    // Send email. nodemailer v7+ only supports the promise-based sendMail(), so
+    // the result is always awaited and no callback argument is passed.
+    const info = await mailer.sendMail({
       from: `"Elegant Stores" <${process.env.EMAIL_USER}>`,
       to,
       subject,
