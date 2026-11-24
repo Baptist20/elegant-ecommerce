@@ -44,7 +44,6 @@ export default withAuth(
       "/api/auth",
       "/api/products",
       "/api/blogs",
-      "/api/blogs/*",
       "/api/wishlist",
       "/api/newsletter",
     ],
