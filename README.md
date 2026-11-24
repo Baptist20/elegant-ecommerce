@@ -1,60 +1,74 @@
 # Elegant Store
 
-A high-end, full-stack e-commerce platform built with performance and aesthetics in mind. This project leverages the power of Next.js and the MERN stack to deliver a seamless shopping and management experience.
+A full-stack e-commerce and editorial content platform built with Next.js (App Router), MongoDB, Stripe, and Kinde Auth. Includes a customer storefront, payment processing, and a role-protected admin dashboard for inventory, order, and blog management.
 
-## 🚀 Features
+🔗 **Live Demo:** https://elegant-ecommerce-vert.vercel.app
 
-### Frontend Excellence
+![Elegant Store Preview](./public/preview.png)
 
-- **Next.js App Router:** Utilizing the latest React patterns for optimized routing.
-- **Next/Image:** Advanced image optimization for lightning-fast loading and layout stability.
-- **Next/Google-Fonts:** Zero-layout-shift font loading using self-hosted Google Fonts.
-- **Server Components:** Efficient data fetching on the server to reduce client-side JavaScript.
+---
 
-### Robust Backend
+## Core Architecture & Features
 
-- **MERN Architecture:** MongoDB and Mongoose for scalable data modeling.
-- **Kinde Auth:** Secure, passwordless authentication for users and admins.
-- **API Routes:** Structured Next.js API handlers for secure communication between the frontend and database.
+### Storefront & Checkout
+* **Server-First Data Fetching:** Uses Next.js App Router Server Components for product catalogs, category filtering, and dynamic SEO metadata (`sitemap.ts`, `robots.ts`) to minimize client-side bundle size.
+* **Payment Processing:** Integrated Stripe checkout workflow with webhook/order status tracking and cart state persistence.
+* **Media Pipeline:** Automated product and editorial image uploads and optimization via Cloudinary.
 
-### Admin Dashboard (The Nerve Center)
+### Admin Dashboard
+* **Inventory Management:** Full CRUD operations for products, pricing, stock levels, and category assignments.
+* **Editorial CMS:** Built-in blog publishing workflow allowing admins to draft, categorize, and publish store articles.
+* **Analytics Overview:** Real-time aggregation of total revenue, order volume, and registered user metrics.
 
-- **Product CRUD:** Full Create, Read, Update, and Delete capabilities for the inventory.
-- **Blog Management:** A dedicated system to publish and edit store articles across various categories.
-- **Store Statistics:** A data-driven dashboard showing real-time stats for orders, users, and revenue.
+### Authentication & Security
+* **Kinde Auth Integration:** Passwordless and OAuth authentication with route-level middleware protection restricting `/admin` endpoints to authorized roles.
 
-### SEO & Technical Specs
+---
 
-- **Dynamic Metadata:** Optimized page titles and descriptions for every product.
-- **Robots.txt & Sitemap:** Automatically generated files to ensure perfect search engine indexing.
-- **Responsive Design:** Fully fluid UI designed to look stunning on any device.
+## Tech Stack
 
-## 🛠️ Tech Stack
+* **Frontend:** Next.js (App Router), React, TypeScript, Tailwind CSS
+* **Backend & Database:** Next.js Route Handlers, MongoDB, Mongoose
+* **Auth, Payments & Media:** Kinde Auth, Stripe, Cloudinary
+* **Deployment:** Vercel
 
-- **Framework:** Next.js (App Router)
-- **Database:** MongoDB
-- **Authentication:** Kinde Auth
-- **Styling:** Tailwind CSS
-- **Deployment:** Vercel
+---
 
-## 📦 Installation
+## Engineering Challenges & Debugging Log
 
-1. Clone the repository:
+### Resolving Production Kinde Auth State Mismatches
+* **Issue:** During production deployment on Vercel, authentication callbacks intermittently failed with state mismatch errors and redirect loops.
+* **Root Cause:** Route protection middleware was configured to guard a non-existent route path, causing unauthenticated redirects to collide with Kinde's OAuth callback handshake and invalidating the session state cookie.
+* **Fix:** Audited browser network payloads during the OAuth redirect lifecycle, removed the dead route matcher from middleware, and explicitly aligned `KINDE_SITE_URL` and callback URLs across local and Vercel environments.
+
+---
+
+## Local Setup
+
+1. **Clone the repository:**
    ```bash
    git clone [https://github.com/Baptist20/elegant-ecommerce.git](https://github.com/Baptist20/elegant-ecommerce.git)
-   ```
-2. Install dependencies:
-
-npm install
-
-3. Set up your environment variables (.env.local):
-
-KINDE_CLIENT_ID
-
-MONGODB_URI
-
-NEXT_PUBLIC_KINDE_REDIRECT_URL
-
-4. Run the development server:
-
-npm run dev
+   cd elegant-ecommerce
+2. **Install dependencies:**
+   ```bash
+   npm install
+3. **Configure environment variables:**
+   Create a .env.local file in the root directory and add:
+   MONGODB_URI=your_mongodb_connection_string
+   KINDE_CLIENT_ID=your_kinde_client_id
+   KINDE_CLIENT_SECRET=your_kinde_client_secret
+   KINDE_ISSUER_URL=https://your-subdomain.kinde.com
+   KINDE_SITE_URL=http://localhost:3000
+   KINDE_POST_LOGOUT_REDIRECT_URL=http://localhost:3000
+   KINDE_POST_LOGIN_REDIRECT_URL=http://localhost:3000/dashboard
+   
+   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+   CLOUDINARY_API_KEY=your_api_key
+   CLOUDINARY_API_SECRET=your_api_secret
+   
+   STRIPE_SECRET_KEY=your_stripe_secret_key
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+4. **Run development server:**
+   ```bash
+   npm run dev
+5. **Open http://localhost:3000 in your browser.**
