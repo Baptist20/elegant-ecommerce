@@ -7,7 +7,6 @@ import {
   ShoppingBag,
   PlusCircle,
   FileText,
-  Users,
   LogOut,
   LayoutDashboard,
 } from "lucide-react";
@@ -19,7 +18,6 @@ const navItems = [
   { name: "Products", href: "/admin/products", icon: PlusCircle },
   { name: "Blogs", href: "/admin/blogs", icon: FileText },
   { name: "Categories", href: "/admin/categories", icon: LayoutGrid },
-  { name: "Users List", href: "/admin/users", icon: Users },
 ];
 
 export default function AdminSideNav() {

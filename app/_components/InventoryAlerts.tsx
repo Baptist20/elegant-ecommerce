@@ -33,7 +33,7 @@ export default function InventoryAlerts({ products }: { products: any[] }) {
                 </p>
               </div>
               <Button size="sm" variant="ghost" asChild>
-                <Link href={`/admin/add-product?id=${product._id}`}>
+                <Link href="/admin/products" prefetch={false}>
                   <ArrowUpRight className="w-4 h-4" />
                 </Link>
               </Button>

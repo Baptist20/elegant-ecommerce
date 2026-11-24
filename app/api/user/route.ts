@@ -18,7 +18,9 @@ export async function POST(request: NextRequest) {
   const { isAuthenticated } = getKindeServerSession();
   const isAuth = await isAuthenticated();
 
-  if (!isAuth) NextResponse.redirect(new URL("/api/login", request.url));
+  if (!isAuth) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const formdata = request.formData();
   const file = ((await formdata).get("file") as File) || null;
 

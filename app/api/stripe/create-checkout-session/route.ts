@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
       })),
       mode: "payment",
       success_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/checkout/success?session_id={CHECKOUT_SESSION_ID}&order_id=${order._id}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/checkout/cancel`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/checkout`,
       metadata: {
         orderId: order._id.toString(),
         userId: dbUser._id.toString(),

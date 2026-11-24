@@ -15,7 +15,7 @@ export default function Footer() {
     },
     {
       name: "Products",
-      href: "/products",
+      href: "/shop",
     },
     {
       name: "Blog",

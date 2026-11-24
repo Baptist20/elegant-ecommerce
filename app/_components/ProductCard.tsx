@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { ArrowUpRight, Heart } from "lucide-react";
-import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { inter } from "../utils/font";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import AddToCartButton from "./AddToCartButton";

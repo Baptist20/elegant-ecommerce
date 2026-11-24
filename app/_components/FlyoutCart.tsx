@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { poppins, inter } from "../utils/font";
 import CartItem from "./CartItem";
-import Link from "next/link";
 import { toast } from "sonner";
 
 interface CartProps {
@@ -235,16 +234,17 @@ export default function FlyoutCart({ isOpen, onClose }: CartProps) {
               </span>
             </button>
 
-            <Link
-              href={"/cart"}
-              className="border-b border-[#121212] pb-0.5 hover:opacity-70 transition-opacity"
+            <button
+              type="button"
+              onClick={onClose}
+              className="border-b border-[#121212] pb-0.5 hover:opacity-70 transition-opacity cursor-pointer"
             >
               <span
                 className={`${inter.className} text-sm font-semibold text-[#121212]`}
               >
-                View Cart
+                Continue Shopping
               </span>
-            </Link>
+            </button>
           </div>
         </div>
       </aside>

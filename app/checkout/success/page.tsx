@@ -240,7 +240,7 @@ function CheckoutSuccessContent() {
         if (!response.ok) {
           const data = await response.json().catch(() => ({}));
           toast.error(data.error || "Payment verification failed");
-          router.push("/checkout/cancel");
+          router.push("/checkout");
           return;
         }
 
@@ -250,7 +250,7 @@ function CheckoutSuccessContent() {
       } catch (error) {
         console.error("Error confirming payment:", error);
         toast.error("Something went wrong while confirming payment");
-        router.push("/checkout/cancel");
+        router.push("/checkout");
       } finally {
         setLoading(false);
       }
