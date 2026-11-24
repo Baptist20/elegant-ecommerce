@@ -4,7 +4,7 @@ A full-stack e-commerce and editorial content platform built with Next.js (App R
 
 🔗 **Live Demo:** https://elegant-ecommerce-vert.vercel.app
 
-![Elegant Store Preview](./public/preview.png)
+![Elegant Store Preview](./public/preview.jpg)
 
 ---
 
